@@ -1,5 +1,5 @@
 -- ============================================
--- 🌙 LUNAR HUB v4.0 (ЭПОХАЛЬНОЕ ОБНОВЛЕНИЕ)
+-- 🌙 LUNAR HUB v4.1 (ЭПОХАЛЬНОЕ ОБНОВЛЕНИЕ)
 -- by Ryzen | ИМБОВОЕ МЕНЮ | СТАБИЛЬНОСТЬ
 -- ============================================
 
@@ -7,7 +7,7 @@
 -- 🔄 АВТО-ОБНОВЛЕНИЕ
 -- ============================================
 local function selfUpdate()
-    local currentVersion = "4.0"
+    local currentVersion = "4.1"
     local repoURL = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/"
     
     local success, remoteVersion = pcall(function()
@@ -47,9 +47,6 @@ local Games = {
         {name = "Rivals", link = "https://rawscripts.net/raw/RIVALS-Noks-hub-keyless-111339"},
         {name = "MM2", link = "https://raw.githubusercontent.com/pruzgar242-rgb/Update/refs/heads/main/out.lua%20(17).txt"},
         {name = "Prison Life (Keyless)", link = "https://rawscripts.net/raw/Prison-Life-serk4rx-script-239866"},
-    },
-    ["🌍 Симуляторы"] = {   
-        -- Добавляй сюда игры
     },
     ["🌋 Приключения"] = {
         {name = "Rost Alpha (Keyless)", link = "https://pastefy.app/JNOgCLi6/raw?part="},
@@ -121,7 +118,7 @@ glow.UIGradient = glowGradient
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 55)
 title.Position = UDim2.new(0, 0, 0, 10)
-title.Text = "🌙 LUNAR HUB v4.0"
+title.Text = "🌙 LUNAR HUB"
 title.TextColor3 = Color3.fromRGB(255, 215, 0)
 title.TextSize = 26
 title.Font = Enum.Font.GothamBold
