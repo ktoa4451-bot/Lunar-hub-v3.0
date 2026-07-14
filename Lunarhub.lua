@@ -1,13 +1,13 @@
 -- ============================================
--- 🌙 LUNAR HUB v4.3 (СТАБИЛЬНАЯ ОСНОВА)
--- by Ryzen | ВОЗВРАЩЕНИЕ К ИСТОКАМ
+-- 🌙 LUNAR HUB v4.4 (ЛЁГКИЙ ИНТЕРФЕЙС)
+-- by Ryzen | КАТЕГОРИИ | ПОИСК | ИГРЫ
 -- ============================================
 
 local Players = game:GetService("Players")
 local PlayerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
 
 -- ============================================
--- ⚡ ИГРЫ (СПИСОК ИЗ ПЕРВОГО СКРИПТА)
+-- ⚡ ИГРЫ (ДОБАВЛЯЙ СЮДА)
 -- ============================================
 local Games = {
     ["🔫 Шутеры"] = {
@@ -30,7 +30,7 @@ local Games = {
 }
 
 -- ============================================
--- 🔧 ПРОСТОЙ GUI (ПРОВЕРЕННЫЙ)
+-- 🔧 GUI
 -- ============================================
 local screen = Instance.new("ScreenGui")
 screen.Name = "LunarHub"
@@ -47,19 +47,11 @@ frame.Active = true
 frame.Draggable = true
 frame.Parent = screen
 
--- ГРАДИЕНТ
-local gradient = Instance.new("UIGradient")
-gradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 20, 60)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(16, 16, 36))
-})
-frame.UIGradient = gradient
-
 -- ЗАГОЛОВОК
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 45)
 title.Position = UDim2.new(0, 0, 0, 5)
-title.Text = "🌙 LUNAR HUB v4.3"
+title.Text = "🌙 LUNAR HUB v4.4"
 title.TextColor3 = Color3.fromRGB(255, 215, 0)
 title.TextScaled = true
 title.Font = Enum.Font.GothamBold
@@ -96,12 +88,24 @@ close.MouseButton1Click:Connect(function()
     screen:Destroy()
 end)
 
--- ============================================
--- 📋 ВКЛАДКИ
--- ============================================
+-- ПОИСК
+local searchBox = Instance.new("TextBox")
+searchBox.Size = UDim2.new(1, -20, 0, 30)
+searchBox.Position = UDim2.new(0, 10, 0, 75)
+searchBox.BackgroundColor3 = Color3.fromRGB(30, 30, 55)
+searchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+searchBox.PlaceholderText = "🔍 Поиск..."
+searchBox.PlaceholderColor3 = Color3.fromRGB(140, 140, 180)
+searchBox.TextSize = 14
+searchBox.Font = Enum.Font.Gotham
+searchBox.BorderSizePixel = 0
+searchBox.ClipsDescendants = true
+searchBox.Parent = frame
+
+-- ВКЛАДКИ
 local tabsFrame = Instance.new("Frame")
 tabsFrame.Size = UDim2.new(1, -10, 0, 36)
-tabsFrame.Position = UDim2.new(0, 5, 0, 75)
+tabsFrame.Position = UDim2.new(0, 5, 0, 110)
 tabsFrame.BackgroundTransparency = 1
 tabsFrame.Parent = frame
 
@@ -118,12 +122,10 @@ tabLayout.FillDirection = Enum.FillDirection.Horizontal
 tabLayout.Padding = UDim.new(0, 5)
 tabLayout.Parent = tabList
 
--- ============================================
--- 📋 СПИСОК ИГР
--- ============================================
+-- СПИСОК ИГР
 local list = Instance.new("ScrollingFrame")
-list.Size = UDim2.new(1, -20, 1, -120)
-list.Position = UDim2.new(0, 10, 0, 115)
+list.Size = UDim2.new(1, -20, 1, -175)
+list.Position = UDim2.new(0, 10, 0, 150)
 list.BackgroundTransparency = 1
 list.CanvasSize = UDim2.new(0, 0, 0, 0)
 list.ScrollBarThickness = 5
@@ -136,6 +138,7 @@ listLayout.Padding = UDim.new(0, 5)
 listLayout.Parent = list
 
 local currentCategory = nil
+local lastSearch = ""
 
 -- ============================================
 -- 🔘 КНОПКИ
@@ -189,12 +192,13 @@ local function createGameButton(data)
     end)
 end
 
-local function updateList(category)
+local function updateList(category, search)
     for _, child in ipairs(list:GetChildren()) do
         if child:IsA("TextButton") then child:Destroy() end
     end
     
     local gamesToShow = {}
+    
     if category and Games[category] then
         for _, game in ipairs(Games[category]) do
             table.insert(gamesToShow, game)
@@ -205,6 +209,17 @@ local function updateList(category)
                 table.insert(gamesToShow, game)
             end
         end
+    end
+    
+    if search and search ~= "" then
+        local filtered = {}
+        local lower = string.lower(search)
+        for _, game in ipairs(gamesToShow) do
+            if string.find(string.lower(game.name), lower, 1, true) then
+                table.insert(filtered, game)
+            end
+        end
+        gamesToShow = filtered
     end
     
     table.sort(gamesToShow, function(a, b)
@@ -257,7 +272,7 @@ for cat, _ in pairs(Games) do
                 end
             end
         end
-        updateList(currentCategory)
+        updateList(currentCategory, lastSearch)
     end)
 end
 
@@ -275,8 +290,16 @@ if first then
 end
 
 -- ============================================
+-- 🔍 ПОИСК
+-- ============================================
+searchBox:GetPropertyChangedSignal("Text"):Connect(function()
+    lastSearch = searchBox.Text
+    updateList(currentCategory, lastSearch)
+end)
+
+-- ============================================
 -- 🚀 ЗАПУСК
 -- ============================================
-updateList(currentCategory)
+updateList(currentCategory, "")
 
-print("✅ Lunar Hub v4.3 загружен! (" .. totalGames .. " игр)")
+print("✅ Lunar Hub v4.4 загружен! (" .. totalGames .. " игр)")
