@@ -1,13 +1,13 @@
 -- ============================================
--- 🌙 LUNAR HUB v4.2 (СТАБИЛЬНАЯ ВЕРСИЯ)
--- by Ryzen | ГАРАНТИРОВАННО РАБОТАЕТ
+-- 🌙 LUNAR HUB v4.3 (СТАБИЛЬНАЯ ОСНОВА)
+-- by Ryzen | ВОЗВРАЩЕНИЕ К ИСТОКАМ
 -- ============================================
 
 local Players = game:GetService("Players")
 local PlayerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
 
 -- ============================================
--- ⚡ ИГРЫ (ДОБАВЛЯЙ СЮДА)
+-- ⚡ ИГРЫ (СПИСОК ИЗ ПЕРВОГО СКРИПТА)
 -- ============================================
 local Games = {
     ["🔫 Шутеры"] = {
@@ -30,7 +30,7 @@ local Games = {
 }
 
 -- ============================================
--- 🔧 ПРОСТОЙ ГАРАНТИРОВАННО РАБОЧИЙ GUI
+-- 🔧 ПРОСТОЙ GUI (ПРОВЕРЕННЫЙ)
 -- ============================================
 local screen = Instance.new("ScreenGui")
 screen.Name = "LunarHub"
@@ -59,7 +59,7 @@ frame.UIGradient = gradient
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 45)
 title.Position = UDim2.new(0, 0, 0, 5)
-title.Text = "🌙 LUNAR HUB v4.2"
+title.Text = "🌙 LUNAR HUB v4.3"
 title.TextColor3 = Color3.fromRGB(255, 215, 0)
 title.TextScaled = true
 title.Font = Enum.Font.GothamBold
@@ -96,10 +96,34 @@ close.MouseButton1Click:Connect(function()
     screen:Destroy()
 end)
 
--- СПИСОК
+-- ============================================
+-- 📋 ВКЛАДКИ
+-- ============================================
+local tabsFrame = Instance.new("Frame")
+tabsFrame.Size = UDim2.new(1, -10, 0, 36)
+tabsFrame.Position = UDim2.new(0, 5, 0, 75)
+tabsFrame.BackgroundTransparency = 1
+tabsFrame.Parent = frame
+
+local tabList = Instance.new("ScrollingFrame")
+tabList.Size = UDim2.new(1, 0, 1, 0)
+tabList.BackgroundTransparency = 1
+tabList.CanvasSize = UDim2.new(2, 0, 0, 0)
+tabList.ScrollBarThickness = 3
+tabList.HorizontalScrollBarInset = Enum.ScrollBarInset.None
+tabList.Parent = tabsFrame
+
+local tabLayout = Instance.new("UIListLayout")
+tabLayout.FillDirection = Enum.FillDirection.Horizontal
+tabLayout.Padding = UDim.new(0, 5)
+tabLayout.Parent = tabList
+
+-- ============================================
+-- 📋 СПИСОК ИГР
+-- ============================================
 local list = Instance.new("ScrollingFrame")
-list.Size = UDim2.new(1, -20, 1, -100)
-list.Position = UDim2.new(0, 10, 0, 75)
+list.Size = UDim2.new(1, -20, 1, -120)
+list.Position = UDim2.new(0, 10, 0, 115)
 list.BackgroundTransparency = 1
 list.CanvasSize = UDim2.new(0, 0, 0, 0)
 list.ScrollBarThickness = 5
@@ -111,67 +135,148 @@ listLayout.SortOrder = Enum.SortOrder.Name
 listLayout.Padding = UDim.new(0, 5)
 listLayout.Parent = list
 
+local currentCategory = nil
+
 -- ============================================
--- 🔘 СОЗДАНИЕ КНОПОК
+-- 🔘 КНОПКИ
 -- ============================================
-for _, gameList in pairs(Games) do
-    for _, game in ipairs(gameList) do
-        local btn = Instance.new("TextButton")
-        btn.Size = UDim2.new(1, 0, 0, 34)
-        btn.Text = game.name
-        btn.TextColor3 = Color3.fromRGB(230, 230, 255)
-        btn.TextSize = 14
-        btn.TextXAlignment = Enum.TextXAlignment.Left
-        btn.Font = Enum.Font.Gotham
-        btn.BackgroundColor3 = Color3.fromRGB(30, 30, 55)
+local function createGameButton(data)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, 0, 0, 34)
+    btn.Text = data.name
+    btn.TextColor3 = Color3.fromRGB(230, 230, 255)
+    btn.TextSize = 14
+    btn.TextXAlignment = Enum.TextXAlignment.Left
+    btn.Font = Enum.Font.Gotham
+    btn.BackgroundColor3 = Color3.fromRGB(30, 30, 55)
+    btn.BackgroundTransparency = 0.2
+    btn.BorderSizePixel = 0
+    btn.Parent = list
+    
+    local padding = Instance.new("UIPadding")
+    padding.PaddingLeft = UDim.new(0, 12)
+    padding.Parent = btn
+    
+    btn.MouseEnter:Connect(function()
+        btn.BackgroundTransparency = 0
+        btn.BackgroundColor3 = Color3.fromRGB(55, 40, 85)
+    end)
+    btn.MouseLeave:Connect(function()
         btn.BackgroundTransparency = 0.2
-        btn.BorderSizePixel = 0
-        btn.Parent = list
+        btn.BackgroundColor3 = Color3.fromRGB(30, 30, 55)
+    end)
+    
+    btn.MouseButton1Click:Connect(function()
+        btn.Text = "⏳ Загрузка..."
+        btn.BackgroundColor3 = Color3.fromRGB(70, 50, 30)
+        task.wait(0.2)
         
-        local padding = Instance.new("UIPadding")
-        padding.PaddingLeft = UDim.new(0, 12)
-        padding.Parent = btn
-        
-        btn.MouseEnter:Connect(function()
-            btn.BackgroundTransparency = 0
-            btn.BackgroundColor3 = Color3.fromRGB(55, 40, 85)
-        end)
-        btn.MouseLeave:Connect(function()
-            btn.BackgroundTransparency = 0.2
-            btn.BackgroundColor3 = Color3.fromRGB(30, 30, 55)
+        local success, err = pcall(function()
+            loadstring(game:HttpGet(data.link))()
         end)
         
-        btn.MouseButton1Click:Connect(function()
-            btn.Text = "⏳ Загрузка..."
-            btn.BackgroundColor3 = Color3.fromRGB(70, 50, 30)
-            
-            local success, err = pcall(function()
-                loadstring(game:HttpGet(game.link))()
-            end)
-            
-            if success then
-                btn.Text = "✅ " .. game.name
-                btn.BackgroundColor3 = Color3.fromRGB(30, 70, 30)
-            else
-                btn.Text = "❌ " .. game.name
-                btn.BackgroundColor3 = Color3.fromRGB(70, 30, 30)
+        if success then
+            btn.Text = "✅ " .. data.name
+            btn.BackgroundColor3 = Color3.fromRGB(30, 70, 30)
+        else
+            btn.Text = "❌ " .. data.name
+            btn.BackgroundColor3 = Color3.fromRGB(70, 30, 30)
+        end
+        
+        task.wait(1.5)
+        btn.Text = data.name
+        btn.BackgroundColor3 = Color3.fromRGB(30, 30, 55)
+    end)
+end
+
+local function updateList(category)
+    for _, child in ipairs(list:GetChildren()) do
+        if child:IsA("TextButton") then child:Destroy() end
+    end
+    
+    local gamesToShow = {}
+    if category and Games[category] then
+        for _, game in ipairs(Games[category]) do
+            table.insert(gamesToShow, game)
+        end
+    else
+        for _, gameList in pairs(Games) do
+            for _, game in ipairs(gameList) do
+                table.insert(gamesToShow, game)
             end
-            
-            task.wait(1.5)
-            btn.Text = game.name
-            btn.BackgroundColor3 = Color3.fromRGB(30, 30, 55)
-        end)
+        end
+    end
+    
+    table.sort(gamesToShow, function(a, b)
+        return a.name < b.name
+    end)
+    
+    for _, game in ipairs(gamesToShow) do
+        createGameButton(game)
+    end
+    
+    list.CanvasSize = UDim2.new(0, 0, 0, #gamesToShow * 39 + 10)
+end
+
+-- ============================================
+-- 🔘 ВКЛАДКИ
+-- ============================================
+for cat, _ in pairs(Games) do
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0, 120, 1, 0)
+    btn.Text = cat
+    btn.TextColor3 = Color3.fromRGB(200, 200, 230)
+    btn.TextSize = 13
+    btn.Font = Enum.Font.Gotham
+    btn.BackgroundColor3 = Color3.fromRGB(25, 25, 50)
+    btn.BackgroundTransparency = 0.3
+    btn.BorderSizePixel = 0
+    btn.Parent = tabList
+    
+    btn.MouseEnter:Connect(function()
+        btn.BackgroundTransparency = 0
+        btn.BackgroundColor3 = Color3.fromRGB(55, 40, 85)
+    end)
+    btn.MouseLeave:Connect(function()
+        if currentCategory ~= cat then
+            btn.BackgroundTransparency = 0.3
+            btn.BackgroundColor3 = Color3.fromRGB(25, 25, 50)
+        end
+    end)
+    
+    btn.MouseButton1Click:Connect(function()
+        currentCategory = cat
+        for _, child in ipairs(tabList:GetChildren()) do
+            if child:IsA("TextButton") then
+                if child == btn then
+                    child.BackgroundTransparency = 0
+                    child.BackgroundColor3 = Color3.fromRGB(80, 50, 130)
+                else
+                    child.BackgroundTransparency = 0.3
+                    child.BackgroundColor3 = Color3.fromRGB(25, 25, 50)
+                end
+            end
+        end
+        updateList(currentCategory)
+    end)
+end
+
+-- ВЫБИРАЕМ ПЕРВУЮ КАТЕГОРИЮ
+local first = next(Games)
+if first then
+    currentCategory = first
+    for _, child in ipairs(tabList:GetChildren()) do
+        if child:IsA("TextButton") and child.Text == first then
+            child.BackgroundTransparency = 0
+            child.BackgroundColor3 = Color3.fromRGB(80, 50, 130)
+            break
+        end
     end
 end
 
--- ОБНОВЛЕНИЕ РАЗМЕРА
-task.wait(0.1)
-local count = 0
-for _, child in ipairs(list:GetChildren()) do
-    if child:IsA("TextButton") then
-        count = count + 1
-    end
-end
-list.CanvasSize = UDim2.new(0, 0, 0, count * 39 + 10)
+-- ============================================
+-- 🚀 ЗАПУСК
+-- ============================================
+updateList(currentCategory)
 
-print("✅ Lunar Hub v4.2 загружен! (" .. totalGames .. " игр)")
+print("✅ Lunar Hub v4.3 загружен! (" .. totalGames .. " игр)")
