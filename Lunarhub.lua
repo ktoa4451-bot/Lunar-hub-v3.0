@@ -1,6 +1,6 @@
 -- ============================================
--- 🌙 LUNAR HUB v4.0 (ПОЛНАЯ ВЕРСИЯ)
--- by Ryzen | ВКЛАДКИ | ПОИСК | ДИЗАЙН | АНИМАЦИИ
+-- 🌙 LUNAR HUB v4.1 (ИМБОВОЕ МЕНЮ)
+-- by Ryzen | АНИМАЦИИ | СТАБИЛЬНОСТЬ
 -- ============================================
 
 local Players = game:GetService("Players")
@@ -31,7 +31,7 @@ local Games = {
 }
 
 -- ============================================
--- 🔧 GUI (ПОЛНАЯ ВЕРСИЯ)
+-- 🔧 GUI (С АНИМАЦИЯМИ)
 -- ============================================
 local screen = Instance.new("ScreenGui")
 screen.Name = "LunarHub"
@@ -92,7 +92,7 @@ local glowPulse = TweenService:Create(
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 50)
 title.Position = UDim2.new(0, 0, 0, 10)
-title.Text = "🌙 LUNAR HUB v4.0"
+title.Text = "🌙 LUNAR HUB v4.1"
 title.TextColor3 = Color3.fromRGB(255, 215, 0)
 title.TextScaled = true
 title.Font = Enum.Font.GothamBold
@@ -108,7 +108,7 @@ end
 local sub = Instance.new("TextLabel")
 sub.Size = UDim2.new(1, 0, 0, 20)
 sub.Position = UDim2.new(0, 0, 0, 55)
-sub.Text = "Игр: " .. totalGames .. " | by Ryzen"
+sub.Text = "📊 " .. totalGames .. " игр | by Ryzen"
 sub.TextColor3 = Color3.fromRGB(170, 170, 210)
 sub.TextSize = 13
 sub.Font = Enum.Font.Gotham
@@ -119,7 +119,7 @@ sub.Parent = frame
 local close = Instance.new("TextButton")
 close.Size = UDim2.new(0, 34, 0, 34)
 close.Position = UDim2.new(1, -40, 0, 6)
-close.Text = "X"
+close.Text = "✕"
 close.TextColor3 = Color3.fromRGB(255, 100, 100)
 close.TextSize = 20
 close.Font = Enum.Font.Gotham
@@ -186,12 +186,12 @@ listLayout.SortOrder = Enum.SortOrder.Name
 listLayout.Padding = UDim.new(0, 5)
 listLayout.Parent = list
 
--- ============================================
--- 🔘 ЛОГИКА РАБОТЫ
--- ============================================
 local currentCategory = nil
 local lastSearch = ""
 
+-- ============================================
+-- 🔘 КНОПКИ С АНИМАЦИЕЙ
+-- ============================================
 local function createGameButton(data, parent)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(1, 0, 0, 34)
@@ -217,7 +217,7 @@ local function createGameButton(data, parent)
     end)
     
     btn.MouseButton1Click:Connect(function()
-        btn.Text = "Загрузка..."
+        btn.Text = "⏳ Загрузка..."
         btn.BackgroundColor3 = Color3.fromRGB(70, 50, 30)
         task.wait(0.2)
         
@@ -239,8 +239,8 @@ local function createGameButton(data, parent)
     end)
 end
 
+-- ОБНОВЛЕНИЕ СПИСКА
 local function updateList(category, search)
-    -- Очищаем список
     for _, child in ipairs(list:GetChildren()) do
         if child:IsA("TextButton") then child:Destroy() end
     end
@@ -281,6 +281,7 @@ local function updateList(category, search)
     list.CanvasSize = UDim2.new(0, 0, 0, #gamesToShow * 39 + 10)
 end
 
+-- ВКЛАДКИ С АНИМАЦИЕЙ
 local function createTabs()
     for cat, _ in pairs(Games) do
         local btn = Instance.new("TextButton")
@@ -345,5 +346,5 @@ updateList(currentCategory, "")
 appearTween:Play()
 glowPulse:Play()
 
-print("✅ Lunar Hub v4.0 загружен! (" .. totalGames .. " игр)")
-print("🌙 Полная версия с анимациями активирована!")
+print("✅ Lunar Hub v4.1 загружен! (" .. totalGames .. " игр)")
+print("🌙 Имбовые анимации активированы!")
