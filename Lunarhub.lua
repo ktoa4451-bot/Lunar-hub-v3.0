@@ -7,7 +7,7 @@
 -- 🔄 АВТО-ОБНОВЛЕНИЕ
 -- ============================================
 local function selfUpdate()
-    local currentVersion = "4.0"
+    local currentVersion = "4.1"
     local repoURL = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/"
     
     local success, remoteVersion = pcall(function()
