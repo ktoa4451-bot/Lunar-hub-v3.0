@@ -8,7 +8,7 @@
 -- ============================================
 local function selfUpdate()
     local currentVersion = "3.1"  -- ← МЕНЯЙ ЭТУ ЦИФРУ ПРИ КАЖДОМ ОБНОВЛЕНИИ
-    local repoURL = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0-release/main/"
+    local repoURL = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/"
     
     local success, remoteVersion = pcall(function()
         return game:HttpGet(repoURL .. "version.txt")
