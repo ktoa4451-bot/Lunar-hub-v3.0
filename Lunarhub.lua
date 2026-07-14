@@ -1,5 +1,5 @@
 -- ============================================
--- 🌙 LUNAR HUB v3.0 (С АВТО-ОБНОВЛЕНИЕМ)
+-- 🌙 LUNAR HUB v3.1 (С АВТО-ОБНОВЛЕНИЕМ)
 -- by Ryzen | Одна ссылка — вечные обновления
 -- ============================================
 
@@ -7,7 +7,7 @@
 -- 🔄 АВТО-ОБНОВЛЕНИЕ
 -- ============================================
 local function selfUpdate()
-    local currentVersion = "1.0"  -- ← МЕНЯЙ ЭТУ ЦИФРУ ПРИ КАЖДОМ ОБНОВЛЕНИИ
+    local currentVersion = "3.1"  -- ← МЕНЯЙ ЭТУ ЦИФРУ ПРИ КАЖДОМ ОБНОВЛЕНИИ
     local repoURL = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0-release/main/"
     
     local success, remoteVersion = pcall(function()
@@ -48,14 +48,19 @@ local Games = {
         {name = "Forsaken", link = "https://raw.githubusercontent.com/ScriptDLC/ScriptDLC/refs/heads/main/ForsakenDLCHUB"},
         {name = "Rivals", link = "https://rawscripts.net/raw/RIVALS-Noks-hub-keyless-111339"},
         {name = "MM2", link = "https://raw.githubusercontent.com/pruzgar242-rgb/Update/refs/heads/main/out.lua%20(17).txt"},
+        {name = "Prison Life", link = "https://raw.githubusercontent.com/tbao143/thaibao/main/TbaohubPrisonLife"},
     },
-    ["⚔️ Драки"] = {
+    ["🌍 Симуляторы"] = {
         {name = "Blox Fruits", link = "https://raw.githubusercontent.com/7GrandDadPNG/7GrandDadPNG/refs/heads/main/BloxFruits.lua"},
+        {name = "Pet Simulator X", link = "https://raw.githubusercontent.com/ZaRdoOx/Ultra-Hub/main/Main"},
+        {name = "Tower of Hell", link = "https://raw.githubusercontent.com/iiProductionz/Floater-Scripts/main/WaifuEdition/Tower%20Of%20Hell"},   
     },
     ["🌋 Приключения"] = {
         {name = "Rost Alpha (Keyless)", link = "https://pastefy.app/JNOgCLi6/raw?part="},
         {name = "Ink Game", link = "https://rawscripts.net/raw/Universal-Script-RINGTA-best-script-for-ink-game-206674"},
         {name = "Wallhop V4", link = "https://rawscripts.net/raw/Universal-Script-Nova-Wallhop-V4-206099"},
+        {name = "Doors", link = "https://raw.githubusercontent.com/RegularVynixus/Vynixius/main/Doors/Script.lua"},
+        {name = "Color or Die", link = "https://scriptblox.com/api/script/150402/source"},
     },
     ["🔑 Премиум"] = {
         {name = "Rost Alpha (Premium)", link = "https://api.jnkie.com/api/v1/luascripts/public/e629b8f01eed30630fc3cb93da70708fdac4e57f3fd11fc6dc308c4d7ba6c1bd/download"},
