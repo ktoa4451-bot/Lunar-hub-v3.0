@@ -1,5 +1,5 @@
 -- ============================================
--- 🌙 LUNAR HUB v3.1 (С АВТО-ОБНОВЛЕНИЕМ)
+-- 🌙 LUNAR HUB v3.2 (С АВТО-ОБНОВЛЕНИЕМ)
 -- by Ryzen | Одна ссылка — вечные обновления
 -- ============================================
 
@@ -7,7 +7,7 @@
 -- 🔄 АВТО-ОБНОВЛЕНИЕ
 -- ============================================
 local function selfUpdate()
-    local currentVersion = "3.1"  -- ← МЕНЯЙ ЭТУ ЦИФРУ ПРИ КАЖДОМ ОБНОВЛЕНИИ
+    local currentVersion = "3.2"  -- ← МЕНЯЙ ЭТУ ЦИФРУ ПРИ КАЖДОМ ОБНОВЛЕНИИ
     local repoURL = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/"
     
     local success, remoteVersion = pcall(function()
@@ -63,7 +63,7 @@ local Games = {
         {name = "Color or Die", link = "https://scriptblox.com/api/script/150402/source"},
     },
     ["🔑 Премиум"] = {
-        {name = "Rost Alpha (Premium)", link = "https://api.jnkie.com/api/v1/luascripts/public/e629b8f01eed30630fc3cb93da70708fdac4e57f3fd11fc6dc308c4d7ba6c1bd/download"},
+        {name = "Rost Alpha (Premium)", link = "https://api.jnkie.com/api/v1/luascripts/public/e629b8f01eed30630fc3cb93da70708fdac4e57f3fd11fc6dc308c4d7ba6c1bd/download"}
     }
 }
 -- ============================================
@@ -96,7 +96,7 @@ frame.Parent = screen
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 45)
 title.Position = UDim2.new(0, 0, 0, 5)
-title.Text = "🌜 Lunar Hub v3.0 🌛"
+title.Text = "🌜 Lunar Hub v3.2 🌛"
 title.TextColor3 = Color3.fromRGB(255, 215, 0)
 title.TextSize = 22
 title.Font = Enum.Font.GothamBold
