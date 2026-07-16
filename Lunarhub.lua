@@ -7,7 +7,7 @@
 -- 🔄 АВТО-ОБНОВЛЕНИЕ
 -- ============================================
 local function selfUpdate()
-    local currentVersion = "5.5"
+    local currentVersion = "5.6"
     local repoURL = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub/main/"
     
     local success, remoteVersion = pcall(function()
@@ -53,15 +53,15 @@ local Games = {
     {name = "Rost Alpha Premium", link = "https://api.jnkie.com/api/v1/luascripts/public/e629b8f01eed30630fc3cb93da70708fdac4e57f3fd11fc6dc308c4d7ba6c1bd/download"},
     {name = "Prison Life Premium", link = "https://rawscripts.net/raw/Prison-Life-Override-Hub-Silent-Aim-and-More-242218"},
     {name = "Slap Battles", link = "https://raw.githubusercontent.com/Articles-Hub/ROBLOXScript/refs/heads/main/File-Script/Slap_Battles.lua"},
-    {name = "Blox Fruit", link = "https://raw.githubusercontent.com/UCT-hub/main/refs/heads/main/redz-v2"},
-    {name = "Grow a Garden 2 (premium)", link = "https://api.luarmor.net/files/v3/loaders/d8824b23a4d9f2e0d62b4e69397d206b.lua"},
+    {name = "Blox Fruits", link = "https://raw.githubusercontent.com/UCT-hub/main/refs/heads/main/redz-v2"},
+    {name = "Grow a Garden 2 Premium", link = "https://api.luarmor.net/files/v3/loaders/d8824b23a4d9f2e0d62b4e69397d206b.lua"},
     {name = "Animal Hospital", link = "https://raw.githubusercontent.com/HexHubX/Games/refs/heads/main/Script%20Games.lua"},
     {name = "Drain the Lake", link = "https://raw.githubusercontent.com/gumanba/Scripts/main/DraintheLake"},
     {name = "Doors", link = "https://raw.githubusercontent.com/bocaj111004/Abysall/refs/heads/main/Loader.luau"},
-    {name = "+1 Speed Keyboard Escape (2-3 world)", link = "https://api.luarmor.net/files/v4/loaders/385c6d8937bfc4ef284dc8c27b50e1c5.lua"},
+    {name = "Speed Keyboard Escape", link = "https://api.luarmor.net/files/v4/loaders/385c6d8937bfc4ef284dc8c27b50e1c5.lua"},
     {name = "Chameleon", link = "https://raw.githubusercontent.com/tawxm/NgThanhTam/refs/heads/main/Chameleon.lua"},
-    {name = "Sell limons", link = "https://raw.githubusercontent.com/Fluxyyy333/HoshiOnTop/main/loader.lua"},
-    {name = "+1 Mine Per Click", link = "https://github.com/gumanba/Scripts/raw/refs/heads/main/1MinePerClick"},
+    {name = "Sell Limons", link = "https://raw.githubusercontent.com/Fluxyyy333/HoshiOnTop/main/loader.lua"},
+    {name = "Mine Per Click", link = "https://raw.githubusercontent.com/gumanba/Scripts/refs/heads/main/1MinePerClick"},
 }
 
 -- ============================================
