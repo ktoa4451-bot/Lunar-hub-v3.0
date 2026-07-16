@@ -1,5 +1,5 @@
 -- ============================================
--- 🌙 LUNAR HUB v5.5 (ЧЁРНЫЙ СТИЛЬ)
+-- 🌙 LUNAR HUB v5.6 (ЧЁРНЫЙ СТИЛЬ)
 -- by Ryzen | УНИВЕРСАЛЬНЫЙ ЗАГРУЗЧИК
 -- ============================================
 
@@ -218,11 +218,11 @@ clickSound.SoundId = "rbxassetid://9120383469"
 clickSound.Volume = 0.3
 clickSound.Parent = screen
 
--- КНОПКИ С УНИВЕРСАЛЬНЫМ ЗАГРУЗЧИКОМ
-for _, game in ipairs(Games) do
+-- КНОПКИ С ИСПРАВЛЕННЫМ ЗАГРУЗЧИКОМ
+for _, gameData in ipairs(Games) do
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(1, 0, 0, 32)
-    btn.Text = game.name
+    btn.Text = gameData.name
     btn.TextColor3 = Color3.fromRGB(230, 230, 255)
     btn.TextSize = 13
     btn.TextXAlignment = Enum.TextXAlignment.Left
@@ -261,22 +261,22 @@ for _, game in ipairs(Games) do
         arrow.Text = "⏳"
         task.wait(0.15)
         
-        -- УНИВЕРСАЛЬНАЯ ЗАГРУЗКА
-        local success, msg = loadScript(game.link)
+        -- 🔥 ИСПРАВЛЕНО: передаём правильную ссылку
+        local success, msg = loadScript(gameData.link)
         
         if success then
-            btn.Text = "✅ " .. game.name
+            btn.Text = "✅ " .. gameData.name
             btn.BackgroundColor3 = Color3.fromRGB(30, 50, 30)
             arrow.Text = "✅"
         else
-            btn.Text = "❌ " .. game.name
+            btn.Text = "❌ " .. gameData.name
             btn.BackgroundColor3 = Color3.fromRGB(50, 30, 30)
             arrow.Text = "❌"
             warn("Ошибка: " .. msg)
         end
         
         task.wait(1)
-        btn.Text = game.name
+        btn.Text = gameData.name
         btn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
         arrow.Text = "▶"
     end)
@@ -306,5 +306,5 @@ end)
 -- ЗАПУСК
 appearTween:Play()
 
-print("✅ Lunar Hub v5.2 загружен! (" .. #Games .. " игр)")
+print("✅ Lunar Hub v5.6 загружен! (" .. #Games .. " игр)")
 print("🌙 Чёрный стиль + универсальный загрузчик активированы!")
