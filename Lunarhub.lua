@@ -1,5 +1,5 @@
 -- ============================================
--- 🌙 LUNAR HUB v5.4 (ФИНАЛЬНАЯ ВЕРСИЯ)
+-- 🌙 LUNAR HUB v5.6 (БАЗОВАЯ ВЕРСИЯ)
 -- by Ryzen
 -- ============================================
 
@@ -7,7 +7,7 @@
 -- 🔄 АВТО-ОБНОВЛЕНИЕ
 -- ============================================
 local function selfUpdate()
-    local currentVersion = "5.4"
+    local currentVersion = "5.6"
     local repoURL = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub/main/"
     
     local success, remoteVersion = pcall(function()
@@ -251,4 +251,4 @@ searchBox:GetPropertyChangedSignal("Text"):Connect(function()
     end
 end)
 
-print("✅ Lunar Hub v5.4 загружен! (" .. #Games .. " игр)")
+print("✅ Lunar Hub v5.6 загружен! (" .. #Games .. " игр)")
