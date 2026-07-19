@@ -1,5 +1,5 @@
 -- ============================================
--- 🌙 LUNAR HUB v7.0 (МЕГА-АПГРЕЙД)
+-- 🌙 LUNAR HUB v7.1 (МЕГА-АПГРЕЙД)
 -- by Ryzen | ДИЗАЙН | ФИЧИ | СТИЛЬ
 -- ============================================
 
@@ -7,7 +7,7 @@
 -- 🔄 АВТО-ОБНОВЛЕНИЕ
 -- ============================================
 local function selfUpdate()
-    local currentVersion = "7.0"
+    local currentVersion = "7.1"
     local repoURL = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub/main/"
     
     local success, remoteVersion = pcall(function()
