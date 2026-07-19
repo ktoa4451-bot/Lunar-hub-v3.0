@@ -1,5 +1,5 @@
 -- ============================================
--- 🌙 LUNAR HUB v5.6 (БАЗОВАЯ ВЕРСИЯ)
+-- 🌙 LUNAR HUB v7.0 (НОВЫЕ ИГРЫ)
 -- by Ryzen
 -- ============================================
 
@@ -7,7 +7,7 @@
 -- 🔄 АВТО-ОБНОВЛЕНИЕ
 -- ============================================
 local function selfUpdate()
-    local currentVersion = "5.6"
+    local currentVersion = "7.0"
     local repoURL = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub/main/"
     
     local success, remoteVersion = pcall(function()
@@ -38,12 +38,10 @@ if selfUpdate() then
 end
 
 -- ============================================
--- ⚡ ИГРЫ
+-- ⚡ ИГРЫ (ВСЕ НАЗВАНИЯ НА АНГЛИЙСКОМ)
 -- ============================================
 local Games = {
-    {name = "Arena 1.8", link = "https://raw.githubusercontent.com/Lutosys/1.8arena/refs/heads/main/1.8arena.lua"},
     {name = "Forsaken", link = "https://raw.githubusercontent.com/ScriptDLC/ScriptDLC/refs/heads/main/ForsakenDLCHUB"},
-    {name = "Rivals", link = "https://rawscripts.net/raw/RIVALS-Noks-hub-keyless-111339"},
     {name = "MM2", link = "https://raw.githubusercontent.com/pruzgar242-rgb/Update/refs/heads/main/out.lua%20(17).txt"},
     {name = "Prison Life", link = "https://rawscripts.net/raw/Prison-Life-serk4rx-script-239866"},
     {name = "Rost Alpha", link = "https://pastefy.app/JNOgCLi6/raw?part="},
@@ -57,6 +55,14 @@ local Games = {
     {name = "Chameleon", link = "https://raw.githubusercontent.com/tawxm/NgThanhTam/refs/heads/main/Chameleon.lua"},
     {name = "Sell Limons", link = "https://raw.githubusercontent.com/Fluxyyy333/HoshiOnTop/main/loader.lua"},
     {name = "Mine Per Click", link = "https://raw.githubusercontent.com/gumanba/Scripts/refs/heads/main/1MinePerClick"},
+    {name = "1+ Speed Keyboard", link = "https://raw.githubusercontent.com/Gerreiro68/ShizaHub/refs/heads/main/loader.lua"},
+    {name = "99 Nights in Forest", link = "https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua"},
+    {name = "Merge Nuke", link = "https://raw.githubusercontent.com/gumanba/Scripts/main/MergeaNuke"},
+    {name = "Dead Rails", link = "https://raw.githubusercontent.com/bocaj111004/Abysall/refs/heads/main/Loader.luau"},
+    {name = "MorphUp", link = "https://raw.githubusercontent.com/gumanba/Scripts/main/MorphUp"},
+    {name = "1 Magic Evolution", link = "https://raw.githubusercontent.com/gumanba/Scripts/main/1MagicEvolution"},
+    {name = "CodeCoat", link = "https://raw.githubusercontent.com/Breadido/Codecoat/refs/heads/main/looder.luau"},
+    {name = "Survive Zombie Arena", link = "https://raw.githubusercontent.com/caomod2077/Script/main/Foxname_SZA.lua"},
 }
 
 -- ============================================
@@ -65,18 +71,21 @@ local Games = {
 local function loadScript(link)
     local success, result = pcall(function()
         local scriptContent = game:HttpGet(link)
-        return loadstring(scriptContent)
+        if scriptContent then
+            return loadstring(scriptContent)
+        end
+        return nil
     end)
     
     if success and result then
         local execSuccess, execErr = pcall(result)
         if execSuccess then
-            return true, "✅ Успешно"
+            return true, "✅ Success"
         else
-            return false, "Ошибка выполнения: " .. tostring(execErr)
+            return false, "Execute error: " .. tostring(execErr)
         end
     else
-        return false, "Ошибка загрузки: " .. tostring(result)
+        return false, "Load error: " .. tostring(result)
     end
 end
 
@@ -104,6 +113,7 @@ frame.Active = true
 frame.Draggable = true
 frame.Parent = screen
 
+-- ТОНКАЯ БЕЛАЯ РАМКА
 local border = Instance.new("Frame")
 border.Size = UDim2.new(1, 2, 1, 2)
 border.Position = UDim2.new(0, -1, 0, -1)
@@ -112,9 +122,10 @@ border.BackgroundTransparency = 0.9
 border.BorderSizePixel = 0
 border.Parent = frame
 
+-- ЗАГОЛОВОК
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 45)
-title.Position = UDim2.new(0, 0, 0, 10)
+title.Size = UDim2.new(1, 0, 0, 40)
+title.Position = UDim2.new(0, 0, 0, 5)
 title.Text = "🌙 LUNAR HUB"
 title.TextColor3 = Color3.fromRGB(255, 215, 0)
 title.TextScaled = true
@@ -122,36 +133,36 @@ title.Font = Enum.Font.GothamBold
 title.BackgroundTransparency = 1
 title.Parent = frame
 
+-- СОЦСЕТИ
+local social = Instance.new("TextLabel")
+social.Size = UDim2.new(1, 0, 0, 16)
+social.Position = UDim2.new(0, 0, 0, 40)
+social.Text = "📱 TT: @lunar_hub1 | TG: @LunarHub_script"
+social.TextColor3 = Color3.fromRGB(200, 200, 255)
+social.TextSize = 11
+social.Font = Enum.Font.Gotham
+social.BackgroundTransparency = 1
+social.Parent = frame
+
+-- СЧЁТЧИК
 local sub = Instance.new("TextLabel")
-sub.Size = UDim2.new(1, 0, 0, 20)
-sub.Position = UDim2.new(0, 0, 0, 52)
-sub.Text = "📊 " .. #Games .. " игр | by Ryzen"
+sub.Size = UDim2.new(1, 0, 0, 16)
+sub.Position = UDim2.new(0, 0, 0, 56)
+sub.Text = "📊 " .. #Games .. " games | by Ryzen"
 sub.TextColor3 = Color3.fromRGB(180, 180, 220)
-sub.TextSize = 12
+sub.TextSize = 11
 sub.Font = Enum.Font.Gotham
 sub.BackgroundTransparency = 1
 sub.Parent = frame
 
-local close = Instance.new("TextButton")
-close.Size = UDim2.new(0, 32, 0, 32)
-close.Position = UDim2.new(1, -40, 0, 8)
-close.Text = "✕"
-close.TextColor3 = Color3.fromRGB(255, 100, 100)
-close.TextSize = 18
-close.Font = Enum.Font.GothamBold
-close.BackgroundTransparency = 1
-close.Parent = frame
-close.MouseButton1Click:Connect(function()
-    screen:Destroy()
-end)
-
+-- ПОИСК
 local searchBox = Instance.new("TextBox")
-searchBox.Size = UDim2.new(1, -20, 0, 28)
-searchBox.Position = UDim2.new(0, 10, 0, 78)
+searchBox.Size = UDim2.new(1, -20, 0, 26)
+searchBox.Position = UDim2.new(0, 10, 0, 74)
 searchBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 searchBox.BackgroundTransparency = 0.5
 searchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-searchBox.PlaceholderText = "🔍 Поиск..."
+searchBox.PlaceholderText = "🔍 Search..."
 searchBox.PlaceholderColor3 = Color3.fromRGB(140, 140, 180)
 searchBox.TextSize = 13
 searchBox.Font = Enum.Font.Gotham
@@ -159,10 +170,14 @@ searchBox.BorderSizePixel = 0
 searchBox.ClipsDescendants = true
 searchBox.Parent = frame
 
+-- ============================================
+-- 📋 СПИСОК ИГР
+-- ============================================
 local list = Instance.new("ScrollingFrame")
-list.Size = UDim2.new(1, -20, 1, -110)
-list.Position = UDim2.new(0, 10, 0, 110)
+list.Size = UDim2.new(1, -20, 1, -120)
+list.Position = UDim2.new(0, 10, 0, 104)
 list.BackgroundTransparency = 1
+list.CanvasSize = UDim2.new(0, 0, 0, 0)
 list.ScrollBarThickness = 4
 list.ScrollBarImageColor3 = Color3.fromRGB(80, 80, 80)
 list.Parent = frame
@@ -172,6 +187,7 @@ listLayout.SortOrder = Enum.SortOrder.Name
 listLayout.Padding = UDim.new(0, 4)
 listLayout.Parent = list
 
+-- КНОПКИ ИГР
 for _, gameData in ipairs(Games) do
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(1, 0, 0, 32)
@@ -199,20 +215,19 @@ for _, gameData in ipairs(Games) do
     arrow.Parent = btn
     
     btn.MouseEnter:Connect(function()
-        btn.BackgroundTransparency = 0
-        btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        arrow.TextColor3 = Color3.fromRGB(255, 215, 0)
+        TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(40, 40, 40)}):Play()
+        TweenService:Create(arrow, TweenInfo.new(0.15), {TextColor3 = Color3.fromRGB(255, 215, 0)}):Play()
     end)
     btn.MouseLeave:Connect(function()
-        btn.BackgroundTransparency = 0.2
-        btn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-        arrow.TextColor3 = Color3.fromRGB(150, 150, 150)
+        TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundTransparency = 0.2, BackgroundColor3 = Color3.fromRGB(15, 15, 15)}):Play()
+        TweenService:Create(arrow, TweenInfo.new(0.15), {TextColor3 = Color3.fromRGB(150, 150, 150)}):Play()
     end)
     
     btn.MouseButton1Click:Connect(function()
         btn.Text = "⏳..."
         btn.BackgroundColor3 = Color3.fromRGB(50, 50, 30)
         arrow.Text = "⏳"
+        task.wait(0.15)
         
         local success, msg = loadScript(gameData.link)
         
@@ -224,9 +239,10 @@ for _, gameData in ipairs(Games) do
             btn.Text = "❌ " .. gameData.name
             btn.BackgroundColor3 = Color3.fromRGB(50, 30, 30)
             arrow.Text = "❌"
+            warn("Error: " .. msg)
         end
         
-        task.wait(1)
+        task.wait(1.5)
         btn.Text = gameData.name
         btn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
         arrow.Text = "▶"
@@ -242,13 +258,40 @@ for _, child in ipairs(list:GetChildren()) do
 end
 list.CanvasSize = UDim2.new(0, 0, 0, count * 36 + 10)
 
+-- ПОИСК
 searchBox:GetPropertyChangedSignal("Text"):Connect(function()
     local search = string.lower(searchBox.Text)
     for _, child in ipairs(list:GetChildren()) do
         if child:IsA("TextButton") then
-            child.Visible = (search == "" or string.find(string.lower(child.Text), search))
+            local name = string.lower(child.Text)
+            child.Visible = (search == "" or string.find(name, search))
         end
     end
 end)
 
-print("✅ Lunar Hub v5.6 загружен! (" .. #Games .. " игр)")
+-- ============================================
+-- 🔧 ЗАКРЫТИЕ ХАБА (КРЕСТИК СЛЕВА)
+-- ============================================
+local close = Instance.new("TextButton")
+close.Size = UDim2.new(0, 30, 0, 30)
+close.Position = UDim2.new(0, 8, 0, 5)
+close.Text = "✕"
+close.TextColor3 = Color3.fromRGB(255, 100, 100)
+close.TextSize = 18
+close.Font = Enum.Font.GothamBold
+close.BackgroundTransparency = 1
+close.Parent = frame
+
+close.MouseEnter:Connect(function()
+    close.TextColor3 = Color3.fromRGB(255, 50, 50)
+end)
+close.MouseLeave:Connect(function()
+    close.TextColor3 = Color3.fromRGB(255, 100, 100)
+end)
+
+close.MouseButton1Click:Connect(function()
+    screen:Destroy()
+end)
+
+print("✅ Lunar Hub v7.0 loaded! (" .. #Games .. " games)")
+print("🌙 New games added!")
