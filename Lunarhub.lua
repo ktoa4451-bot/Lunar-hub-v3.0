@@ -1,5 +1,5 @@
 -- ============================================
--- 🌙 LUNAR HUB v28.0 (FIXED)
+-- 🌙 LUNAR HUB v29.0 (FINAL)
 -- by Ryzen
 -- ============================================
 
@@ -7,7 +7,7 @@
 -- 🔄 АВТО-ОБНОВЛЕНИЕ
 -- ============================================
 local function selfUpdate()
-    local currentVersion = "28.0"
+    local currentVersion = "29.0"
     local repoURL = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub/main/"
     
     local success, remoteVersion = pcall(function()
@@ -97,7 +97,7 @@ screen.Parent = PlayerGui
 -- 🎵 ЗВУК НАЖАТИЯ
 -- ============================================
 local clickSound = Instance.new("Sound")
-clickSound.SoundId = "rbxassetid://9120385735" -- Roblox UI Click
+clickSound.SoundId = "rbxassetid://9120385735"
 clickSound.Volume = 0.3
 clickSound.Parent = screen
 
@@ -197,7 +197,7 @@ headerCorner.CornerRadius = UDim.new(0, 16)
 headerCorner.Parent = header
 
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(0, 180, 1, 0)
+title.Size = UDim2.new(0, 170, 1, 0)
 title.Position = UDim2.new(0, 20, 0, 0)
 title.Text = "🌙 LUNAR HUB"
 title.TextColor3 = Color3.fromRGB(255, 215, 0)
@@ -207,10 +207,9 @@ title.BackgroundTransparency = 1
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = header
 
--- ОНЛАЙН (С ТЕКСТОМ)
 local onlineLabel = Instance.new("TextLabel")
-onlineLabel.Size = UDim2.new(0, 130, 1, 0)
-onlineLabel.Position = UDim2.new(0, 200, 0, 0)
+onlineLabel.Size = UDim2.new(0, 120, 1, 0)
+onlineLabel.Position = UDim2.new(0, 190, 0, 0)
 onlineLabel.Text = "🟢 Онлайн: 0"
 onlineLabel.TextColor3 = Color3.fromRGB(0, 255, 100)
 onlineLabel.TextSize = 14
@@ -219,10 +218,9 @@ onlineLabel.BackgroundTransparency = 1
 onlineLabel.TextXAlignment = Enum.TextXAlignment.Left
 onlineLabel.Parent = header
 
--- СЧЁТЧИК ИГР (С ТЕКСТОМ)
 local gameCountLabel = Instance.new("TextLabel")
-gameCountLabel.Size = UDim2.new(0, 130, 1, 0)
-gameCountLabel.Position = UDim2.new(0, 330, 0, 0)
+gameCountLabel.Size = UDim2.new(0, 120, 1, 0)
+gameCountLabel.Position = UDim2.new(0, 310, 0, 0)
 gameCountLabel.Text = "🎮 Игр: 0"
 gameCountLabel.TextColor3 = Color3.fromRGB(100, 200, 255)
 gameCountLabel.TextSize = 14
@@ -283,7 +281,6 @@ local searchCorner = Instance.new("UICorner")
 searchCorner.CornerRadius = UDim.new(0, 8)
 searchCorner.Parent = searchBox
 
--- АНИМАЦИЯ ФОКУСА
 searchBox.Focused:Connect(function()
     TweenService:Create(searchBox, TweenInfo.new(0.2), {BackgroundTransparency = 0.1, BackgroundColor3 = Color3.fromRGB(50, 40, 100)}):Play()
 end)
@@ -292,7 +289,7 @@ searchBox.FocusLost:Connect(function()
 end)
 
 -- ============================================
--- 📂 КАТЕГОРИИ
+-- 📂 КАТЕГОРИИ (СНИЗУ: ОБНОВЛЕНИЯ, ПОТОМ ИГРЫ)
 -- ============================================
 local categoriesFrame = Instance.new("Frame")
 categoriesFrame.Size = UDim2.new(0, 120, 0, 300)
@@ -300,42 +297,14 @@ categoriesFrame.Position = UDim2.new(0, 20, 0, 120)
 categoriesFrame.BackgroundTransparency = 1
 categoriesFrame.Parent = frame
 
--- 1. КНОПКА "ИГРЫ" (ПЕРВАЯ)
-local gamesCategoryBtn = Instance.new("TextButton")
-gamesCategoryBtn.Size = UDim2.new(1, 0, 0, 36)
-gamesCategoryBtn.Position = UDim2.new(0, 0, 0, 0)
-gamesCategoryBtn.Text = "🎮 Игры"
-gamesCategoryBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-gamesCategoryBtn.TextSize = 14
-gamesCategoryBtn.Font = Enum.Font.GothamBold
-gamesCategoryBtn.BackgroundColor3 = Color3.fromRGB(60, 40, 150)
-gamesCategoryBtn.BackgroundTransparency = 0
-gamesCategoryBtn.BorderSizePixel = 0
-gamesCategoryBtn.Parent = categoriesFrame
+local categoriesLayout = Instance.new("UIListLayout")
+categoriesLayout.FillDirection = Enum.FillDirection.Vertical
+categoriesLayout.Padding = UDim.new(0, 6)
+categoriesLayout.Parent = categoriesFrame
 
-local gamesBtnCorner = Instance.new("UICorner")
-gamesBtnCorner.CornerRadius = UDim.new(0, 8)
-gamesBtnCorner.Parent = gamesCategoryBtn
-
-gamesCategoryBtn.MouseEnter:Connect(function()
-    TweenService:Create(gamesCategoryBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(80, 60, 200)}):Play()
-end)
-gamesCategoryBtn.MouseLeave:Connect(function()
-    TweenService:Create(gamesCategoryBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(60, 40, 150)}):Play()
-end)
-
-gamesCategoryBtn.MouseButton1Click:Connect(function()
-    clickSound:Play()
-    TweenService:Create(gamesCategoryBtn, TweenInfo.new(0.1, Enum.EasingStyle.Back), {Size = UDim2.new(1, 0, 0, 32)}):Play()
-    task.wait(0.1)
-    TweenService:Create(gamesCategoryBtn, TweenInfo.new(0.1, Enum.EasingStyle.Back), {Size = UDim2.new(1, 0, 0, 36)}):Play()
-    updateContent()
-end)
-
--- 2. КНОПКА "ОБНОВЛЕНИЯ" (ВТОРАЯ)
+-- 1. КНОПКА "ОБНОВЛЕНИЯ" (СВЕРХУ)
 local updateBtn = Instance.new("TextButton")
 updateBtn.Size = UDim2.new(1, 0, 0, 36)
-updateBtn.Position = UDim2.new(0, 0, 0, 45)
 updateBtn.Text = "📢 Обновления"
 updateBtn.TextColor3 = Color3.fromRGB(255, 200, 100)
 updateBtn.TextSize = 13
@@ -396,7 +365,7 @@ updateBtn.MouseButton1Click:Connect(function()
     local updateText = Instance.new("TextLabel")
     updateText.Size = UDim2.new(1, -20, 0, 80)
     updateText.Position = UDim2.new(0, 10, 0, 50)
-    updateText.Text = "v28.0 — Исправлено:\n— Звук и анимации\n— Надписи вверху\n— Категория 'Игры' сверху\n— Игры без поиска"
+    updateText.Text = "v29.0 — Финальная версия\n— Авто-поиск при запуске\n— Категория 'Игры' снизу\n— Звук и анимации"
     updateText.TextColor3 = Color3.fromRGB(200, 200, 255)
     updateText.TextSize = 14
     updateText.Font = Enum.Font.Gotham
@@ -404,7 +373,6 @@ updateBtn.MouseButton1Click:Connect(function()
     updateText.TextWrapped = true
     updateText.Parent = updateFrame
     
-    -- ТОЛЬКО GITHUB (БЕЗ TWITTER)
     local socialText = Instance.new("TextLabel")
     socialText.Size = UDim2.new(1, -20, 0, 25)
     socialText.Position = UDim2.new(0, 10, 0, 140)
@@ -434,6 +402,37 @@ updateBtn.MouseButton1Click:Connect(function()
     
     updateFrame.BackgroundTransparency = 1
     TweenService:Create(updateFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.15}):Play()
+end)
+
+-- 2. КНОПКА "ИГРЫ" (СНИЗУ)
+local gamesCategoryBtn = Instance.new("TextButton")
+gamesCategoryBtn.Size = UDim2.new(1, 0, 0, 36)
+gamesCategoryBtn.Text = "🎮 Игры"
+gamesCategoryBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+gamesCategoryBtn.TextSize = 14
+gamesCategoryBtn.Font = Enum.Font.GothamBold
+gamesCategoryBtn.BackgroundColor3 = Color3.fromRGB(60, 40, 150)
+gamesCategoryBtn.BackgroundTransparency = 0
+gamesCategoryBtn.BorderSizePixel = 0
+gamesCategoryBtn.Parent = categoriesFrame
+
+local gamesBtnCorner = Instance.new("UICorner")
+gamesBtnCorner.CornerRadius = UDim.new(0, 8)
+gamesBtnCorner.Parent = gamesCategoryBtn
+
+gamesCategoryBtn.MouseEnter:Connect(function()
+    TweenService:Create(gamesCategoryBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(80, 60, 200)}):Play()
+end)
+gamesCategoryBtn.MouseLeave:Connect(function()
+    TweenService:Create(gamesCategoryBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(60, 40, 150)}):Play()
+end)
+
+gamesCategoryBtn.MouseButton1Click:Connect(function()
+    clickSound:Play()
+    TweenService:Create(gamesCategoryBtn, TweenInfo.new(0.1, Enum.EasingStyle.Back), {Size = UDim2.new(1, 0, 0, 32)}):Play()
+    task.wait(0.1)
+    TweenService:Create(gamesCategoryBtn, TweenInfo.new(0.1, Enum.EasingStyle.Back), {Size = UDim2.new(1, 0, 0, 36)}):Play()
+    updateContent()
 end)
 
 -- ============================================
@@ -539,7 +538,7 @@ local function createGameButton(gameData)
 end
 
 -- ============================================
--- 🔧 ОБНОВЛЕНИЕ КОНТЕНТА (ФИКС ПОИСКА)
+-- 🔧 ОБНОВЛЕНИЕ КОНТЕНТА
 -- ============================================
 local function updateContent()
     for _, child in ipairs(contentFrame:GetChildren()) do
@@ -591,7 +590,7 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 end)
 
 -- ============================================
--- 🚀 ЗАПУСК (ФИКС: ИГРЫ ПОЯВЛЯЮТСЯ СРАЗУ)
+-- 🚀 ЗАПУСК (С АВТО-НАЖАТИЕМ НА ПОИСК)
 -- ============================================
 local function finalStart()
     updateLoading(10, "Создание интерфейса")
@@ -624,18 +623,23 @@ local function finalStart()
     updateLoading(85, "Финальная настройка")
     task.wait(0.2)
     
-    -- 🔥 ГЛАВНЫЙ ФИКС: ПРИНУДИТЕЛЬНЫЙ ЗАПУСК
+    -- ============================================
+    -- 🔥 АВТО-НАЖАТИЕ НА ПОИСК
+    -- ============================================
+    searchBox.Text = ""
     updateContent()
     task.wait(0.1)
     updateContent()  -- Двойной вызов для гарантии
+    -- ============================================
     
     updateLoading(100, "Готово!")
     task.wait(0.4)
     
     loadingFrame:Destroy()
     
-    print("✅ Lunar Hub v28.0 loaded! (" .. #Games .. " games)")
+    print("✅ Lunar Hub v29.0 loaded! (" .. #Games .. " games)")
     print("🟢 Online: " .. #Players:GetPlayers())
+    print("🔍 Авто-поиск активирован!")
 end
 
 task.wait(0.2)
