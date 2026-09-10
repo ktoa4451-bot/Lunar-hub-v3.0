@@ -1,194 +1,313 @@
 -- ============================================
--- 🌙 LUNAR HUB v29.0 (FINAL)
--- by Ryzen
+-- 🌙 LUNAR HUB v30.0
+-- Improved UI / Loader / Search
 -- ============================================
 
--- ============================================
--- 🔄 АВТО-ОБНОВЛЕНИЕ
--- ============================================
-local function selfUpdate()
-    local currentVersion = "29.0"
-    local repoURL = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub/main/"
-    
-    local success, remoteVersion = pcall(function()
-        return game:HttpGet(repoURL .. "version.txt")
-    end)
-    
-    if not success then
-        warn("⚠️ Не удалось проверить обновления. Загружаю текущую версию.")
-        return false
-    end
-    
-    remoteVersion = remoteVersion:gsub("%s+", "")
-    
-    if remoteVersion ~= currentVersion then
-        print("🔄 Найдено обновление! (" .. currentVersion .. " → " .. remoteVersion .. ")")
-        print("📥 Загрузка новой версии...")
-        local newScript = game:HttpGet(repoURL .. "Lunarhub.lua")
-        loadstring(newScript)()
-        return true
-    end
-    
-    print("✅ Версия актуальна (" .. currentVersion .. ")")
-    return false
-end
-
-if selfUpdate() then
-    return
-end
+local VERSION = "30.0"
 
 -- ============================================
--- ⚡ ИГРЫ (БЕЗ ИКОНОК)
+-- ⚙️ SERVICES
 -- ============================================
-local Games = {
-    {name = "Forsaken", link = "https://raw.githubusercontent.com/ScriptDLC/ScriptDLC/refs/heads/main/ForsakenDLCHUB"},
-    {name = "MM2", link = "https://raw.githubusercontent.com/pruzgar242-rgb/Update/refs/heads/main/out.lua%20(17).txt"},
-    {name = "Rivals", link = "https://rawscripts.net/raw/RIVALS-Noks-hub-keyless-111339"},
-    {name = "Slap Battles", link = "https://raw.githubusercontent.com/Articles-Hub/ROBLOXScript/refs/heads/main/File-Script/Slap_Battles.lua"},
-    {name = "King Legacy", link = "https://pastefy.app/3xQp8vL9/raw"},
-    {name = "1+ Speed Keyboard", link = "https://raw.githubusercontent.com/Gerreiro68/ShizaHub/refs/heads/main/loader.lua"},
-    {name = "Merge Nuke", link = "https://raw.githubusercontent.com/gumanba/Scripts/main/MergeaNuke"},
-    {name = "MorphUp", link = "https://raw.githubusercontent.com/gumanba/Scripts/main/MorphUp"},
-    {name = "1 Magic Evolution", link = "https://raw.githubusercontent.com/gumanba/Scripts/main/1MagicEvolution"},
-    {name = "99 Nights in Forest", link = "https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua"},
-    {name = "Survive Zombie Arena", link = "https://raw.githubusercontent.com/caomod2077/Script/main/Foxname_SZA.lua"},
-    {name = "Color or Die", link = "https://rawscripts.net/raw/Color-or-Die-Esp-12555"},
-    {name = "Rost Alpha Premium", link = "https://api.jnkie.com/api/v1/luascripts/public/e629b8f01eed30630fc3cb93da70708fdac4e57f3fd11fc6dc308c4d7ba6c1bd/download"},
-    {name = "Prison Life Premium", link = "https://rawscripts.net/raw/Prison-Life-Override-Hub-Silent-Aim-and-More-242218"},
-}
 
--- ============================================
--- 🔧 УНИВЕРСАЛЬНЫЙ ЗАГРУЗЧИК
--- ============================================
-local function loadScript(link)
-    local success, result = pcall(function()
-        local scriptContent = game:HttpGet(link)
-        if scriptContent then
-            return loadstring(scriptContent)
-        end
-        return nil
-    end)
-    
-    if success and result then
-        local execSuccess, execErr = pcall(result)
-        if execSuccess then
-            return true
-        else
-            return false
-        end
-    else
-        return false
-    end
-end
-
--- ============================================
--- 🔧 GUI
--- ============================================
 local Players = game:GetService("Players")
-local PlayerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
-local screen = Instance.new("ScreenGui")
-screen.Name = "LunarHub"
-screen.Parent = PlayerGui
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
 -- ============================================
--- 🎵 ЗВУК НАЖАТИЯ
+-- 🎨 THEME
 -- ============================================
-local clickSound = Instance.new("Sound")
-clickSound.SoundId = "rbxassetid://9120385735"
-clickSound.Volume = 0.3
-clickSound.Parent = screen
+
+local Theme = {
+    Background = Color3.fromRGB(10, 10, 20),
+    Secondary = Color3.fromRGB(17, 17, 32),
+    Card = Color3.fromRGB(24, 24, 45),
+    CardHover = Color3.fromRGB(40, 35, 75),
+
+    Accent = Color3.fromRGB(125, 90, 255),
+    AccentHover = Color3.fromRGB(150, 120, 255),
+
+    Gold = Color3.fromRGB(255, 215, 80),
+
+    Text = Color3.fromRGB(245, 245, 255),
+    SubText = Color3.fromRGB(150, 150, 175),
+
+    Success = Color3.fromRGB(70, 220, 130),
+    Error = Color3.fromRGB(255, 80, 90),
+    Warning = Color3.fromRGB(255, 190, 70),
+}
 
 -- ============================================
--- 🎬 ЭКРАН ЗАГРУЗКИ
+-- 🎮 GAMES
 -- ============================================
-local loadingFrame = Instance.new("Frame")
-loadingFrame.Size = UDim2.new(0, 350, 0, 200)
-loadingFrame.Position = UDim2.new(0.5, -175, 0.5, -100)
-loadingFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 30)
-loadingFrame.BackgroundTransparency = 0
-loadingFrame.BorderSizePixel = 0
-loadingFrame.ClipsDescendants = true
-loadingFrame.Parent = screen
 
-local loadingCorner = Instance.new("UICorner")
-loadingCorner.CornerRadius = UDim.new(0, 16)
-loadingCorner.Parent = loadingFrame
+local Games = {
+    {
+        name = "Forsaken",
+        link = "https://raw.githubusercontent.com/ScriptDLC/ScriptDLC/refs/heads/main/ForsakenDLCHUB"
+    },
 
-local loadingTitle = Instance.new("TextLabel")
-loadingTitle.Size = UDim2.new(1, 0, 0, 50)
-loadingTitle.Position = UDim2.new(0, 0, 0, 15)
-loadingTitle.Text = "🌙 LUNAR HUB"
-loadingTitle.TextColor3 = Color3.fromRGB(255, 215, 0)
-loadingTitle.TextSize = 28
-loadingTitle.Font = Enum.Font.GothamBold
-loadingTitle.BackgroundTransparency = 1
-loadingTitle.Parent = loadingFrame
+    {
+        name = "MM2",
+        link = "https://raw.githubusercontent.com/pruzgar242-rgb/Update/refs/heads/main/out.lua%20(17).txt"
+    },
 
-local loadingText = Instance.new("TextLabel")
-loadingText.Size = UDim2.new(1, 0, 0, 30)
-loadingText.Position = UDim2.new(0, 0, 0, 75)
-loadingText.Text = "⏳ Загрузка... 0%"
-loadingText.TextColor3 = Color3.fromRGB(200, 200, 255)
-loadingText.TextSize = 16
-loadingText.Font = Enum.Font.GothamBold
-loadingText.BackgroundTransparency = 1
-loadingText.Parent = loadingFrame
+    {
+        name = "Rivals",
+        link = "https://rawscripts.net/raw/RIVALS-Noks-hub-keyless-111339"
+    },
 
-local loadingBarBg = Instance.new("Frame")
-loadingBarBg.Size = UDim2.new(0.8, 0, 0, 8)
-loadingBarBg.Position = UDim2.new(0.1, 0, 0, 120)
-loadingBarBg.BackgroundColor3 = Color3.fromRGB(40, 40, 70)
-loadingBarBg.BorderSizePixel = 0
-loadingBarBg.Parent = loadingFrame
+    {
+        name = "Slap Battles",
+        link = "https://raw.githubusercontent.com/Articles-Hub/ROBLOXScript/refs/heads/main/File-Script/Slap_Battles.lua"
+    },
 
-local loadingBarCorner = Instance.new("UICorner")
-loadingBarCorner.CornerRadius = UDim.new(0, 4)
-loadingBarCorner.Parent = loadingBarBg
+    {
+        name = "King Legacy",
+        link = "https://pastefy.app/3xQp8vL9/raw"
+    },
 
-local loadingBar = Instance.new("Frame")
-loadingBar.Size = UDim2.new(0, 0, 0, 8)
-loadingBar.BackgroundColor3 = Color3.fromRGB(0, 200, 255)
-loadingBar.BorderSizePixel = 0
-loadingBar.Parent = loadingBarBg
+    {
+        name = "1+ Speed Keyboard",
+        link = "https://raw.githubusercontent.com/Gerreiro68/ShizaHub/refs/heads/main/loader.lua"
+    },
 
-local loadingBarCorner2 = Instance.new("UICorner")
-loadingBarCorner2.CornerRadius = UDim.new(0, 4)
-loadingBarCorner2.Parent = loadingBar
+    {
+        name = "Merge Nuke",
+        link = "https://raw.githubusercontent.com/gumanba/Scripts/main/MergeaNuke"
+    },
 
-local function updateLoading(percent, text)
-    loadingText.Text = "⏳ " .. text .. " " .. percent .. "%"
-    loadingBar.Size = UDim2.new(percent / 100, 0, 0, 8)
+    {
+        name = "MorphUp",
+        link = "https://raw.githubusercontent.com/gumanba/Scripts/main/MorphUp"
+    },
+
+    {
+        name = "1 Magic Evolution",
+        link = "https://raw.githubusercontent.com/gumanba/Scripts/main/1MagicEvolution"
+    },
+
+    {
+        name = "99 Nights in Forest",
+        link = "https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua"
+    },
+
+    {
+        name = "Survive Zombie Arena",
+        link = "https://raw.githubusercontent.com/caomod2077/Script/main/Foxname_SZA.lua"
+    },
+
+    {
+        name = "Color or Die",
+        link = "https://rawscripts.net/raw/Color-or-Die-Esp-12555"
+    },
+
+    {
+        name = "Rost Alpha Premium",
+        link = "https://api.jnkie.com/api/v1/luascripts/public/e629b8f01eed30630fc3cb93da70708fdac4e57f3fd11fc6dc308c4d7ba6c1bd/download"
+    },
+
+    {
+        name = "Prison Life Premium",
+        link = "https://rawscripts.net/raw/Prison-Life-Override-Hub-Silent-Aim-and-More-242218"
+    },
+}
+
+-- ============================================
+-- 🔄 UPDATE
+-- ============================================
+
+local UPDATE_BASE =
+    "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/"
+
+local function checkUpdate()
+    local ok, remoteVersion = pcall(function()
+        return game:HttpGet(UPDATE_BASE .. "version.txt")
+    end)
+
+    if not ok or not remoteVersion then
+        return false
+    end
+
+    remoteVersion = remoteVersion:gsub("%s+", "")
+
+    if remoteVersion ~= VERSION then
+        warn(
+            "[Lunar Hub] Update available: "
+            .. VERSION
+            .. " -> "
+            .. remoteVersion
+        )
+
+        return true, remoteVersion
+    end
+
+    return false
 end
 
 -- ============================================
--- 🖼️ ОСНОВНОЕ ОКНО
+-- 🛡️ SCREEN GUI
 -- ============================================
+
+local oldGui = PlayerGui:FindFirstChild("LunarHub")
+
+if oldGui then
+    oldGui:Destroy()
+end
+
+local screen = Instance.new("ScreenGui")
+screen.Name = "LunarHub"
+screen.ResetOnSpawn = false
+screen.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+screen.Parent = PlayerGui
+
+-- ============================================
+-- 🔊 SOUND
+-- ============================================
+
+local clickSound = Instance.new("Sound")
+clickSound.SoundId = "rbxassetid://9120385735"
+clickSound.Volume = 0.25
+clickSound.Parent = screen
+
+local function playClick()
+    pcall(function()
+        clickSound:Play()
+    end)
+end
+
+-- ============================================
+-- 🧩 HELPERS
+-- ============================================
+
+local function addCorner(object, radius)
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, radius or 8)
+    corner.Parent = object
+
+    return corner
+end
+
+local function addStroke(object, color, transparency)
+    local stroke = Instance.new("UIStroke")
+    stroke.Color = color or Theme.Accent
+    stroke.Transparency = transparency or 0.5
+    stroke.Thickness = 1
+    stroke.Parent = object
+
+    return stroke
+end
+
+local function tween(object, info, properties)
+    return TweenService:Create(object, info, properties)
+end
+
+-- ============================================
+-- 🔔 NOTIFICATION
+-- ============================================
+
+local notificationHolder = Instance.new("Frame")
+notificationHolder.Size = UDim2.new(0, 280, 0, 300)
+notificationHolder.Position = UDim2.new(1, -300, 1, -320)
+notificationHolder.BackgroundTransparency = 1
+notificationHolder.Parent = screen
+
+local notificationLayout = Instance.new("UIListLayout")
+notificationLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+notificationLayout.Padding = UDim.new(0, 8)
+notificationLayout.Parent = notificationHolder
+
+local function notify(message, color)
+    local item = Instance.new("Frame")
+
+    item.Size = UDim2.new(1, 0, 0, 45)
+    item.BackgroundColor3 = Theme.Secondary
+    item.BackgroundTransparency = 0.05
+    item.BorderSizePixel = 0
+    item.Parent = notificationHolder
+
+    addCorner(item, 10)
+    addStroke(item, color or Theme.Accent, 0.55)
+
+    local text = Instance.new("TextLabel")
+
+    text.Size = UDim2.new(1, -20, 1, 0)
+    text.Position = UDim2.new(0, 10, 0, 0)
+    text.BackgroundTransparency = 1
+    text.Text = message
+    text.TextColor3 = Theme.Text
+    text.TextSize = 13
+    text.Font = Enum.Font.GothamMedium
+    text.TextWrapped = true
+    text.TextXAlignment = Enum.TextXAlignment.Left
+    text.Parent = item
+
+    item.Position = UDim2.new(1, 30, 0, 0)
+
+    tween(
+        item,
+        TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+        {Position = UDim2.new(0, 0, 0, 0)}
+    ):Play()
+
+    task.delay(3, function()
+        if item.Parent then
+            tween(
+                item,
+                TweenInfo.new(0.2),
+                {
+                    Position = UDim2.new(1, 30, 0, 0),
+                    BackgroundTransparency = 1
+                }
+            ):Play()
+
+            task.wait(0.25)
+
+            if item then
+                item:Destroy()
+            end
+        end
+    end)
+end
+
+-- ============================================
+-- 🖥️ MAIN FRAME
+-- ============================================
+
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 600, 0, 480)
-frame.Position = UDim2.new(0.5, -300, 0.5, -240)
-frame.BackgroundColor3 = Color3.fromRGB(10, 10, 25)
-frame.BackgroundTransparency = 0
+
+frame.Name = "Main"
+frame.Size = UDim2.new(0.8, 0, 0.72, 0)
+frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+frame.AnchorPoint = Vector2.new(0.5, 0.5)
+frame.BackgroundColor3 = Theme.Background
 frame.BorderSizePixel = 0
 frame.ClipsDescendants = true
 frame.Active = true
-frame.Draggable = true
 frame.Parent = screen
-frame.Visible = false
 
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 16)
-corner.Parent = frame
+addCorner(frame, 16)
+addStroke(frame, Theme.Accent, 0.65)
 
 -- ============================================
--- 🔧 ЗАГОЛОВОК
+-- 📏 SIZE LIMIT
 -- ============================================
+
+local sizeConstraint = Instance.new("UISizeConstraint")
+sizeConstraint.MinSize = Vector2.new(320, 360)
+sizeConstraint.MaxSize = Vector2.new(760, 600)
+sizeConstraint.Parent = frame
+
+-- ============================================
+-- 🎯 HEADER
+-- ============================================
+
 local header = Instance.new("Frame")
-header.Size = UDim2.new(1, 0, 0, 60)
-header.BackgroundColor3 = Color3.fromRGB(20, 15, 40)
-header.BackgroundTransparency = 0
+
+header.Size = UDim2.new(1, 0, 0, 62)
+header.BackgroundColor3 = Theme.Secondary
 header.BorderSizePixel = 0
 header.Parent = frame
 
@@ -196,451 +315,496 @@ local headerCorner = Instance.new("UICorner")
 headerCorner.CornerRadius = UDim.new(0, 16)
 headerCorner.Parent = header
 
+-- title
+
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(0, 170, 1, 0)
-title.Position = UDim2.new(0, 20, 0, 0)
-title.Text = "🌙 LUNAR HUB"
-title.TextColor3 = Color3.fromRGB(255, 215, 0)
-title.TextSize = 22
-title.Font = Enum.Font.GothamBold
+
+title.Size = UDim2.new(0, 180, 1, 0)
+title.Position = UDim2.new(0, 18, 0, 0)
 title.BackgroundTransparency = 1
+title.Text = "🌙 LUNAR HUB"
+title.TextColor3 = Theme.Gold
+title.TextSize = 20
+title.Font = Enum.Font.GothamBold
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = header
 
-local onlineLabel = Instance.new("TextLabel")
-onlineLabel.Size = UDim2.new(0, 120, 1, 0)
-onlineLabel.Position = UDim2.new(0, 190, 0, 0)
-onlineLabel.Text = "🟢 Онлайн: 0"
-onlineLabel.TextColor3 = Color3.fromRGB(0, 255, 100)
-onlineLabel.TextSize = 14
-onlineLabel.Font = Enum.Font.GothamBold
-onlineLabel.BackgroundTransparency = 1
-onlineLabel.TextXAlignment = Enum.TextXAlignment.Left
-onlineLabel.Parent = header
+-- version
 
-local gameCountLabel = Instance.new("TextLabel")
-gameCountLabel.Size = UDim2.new(0, 120, 1, 0)
-gameCountLabel.Position = UDim2.new(0, 310, 0, 0)
-gameCountLabel.Text = "🎮 Игр: 0"
-gameCountLabel.TextColor3 = Color3.fromRGB(100, 200, 255)
-gameCountLabel.TextSize = 14
-gameCountLabel.Font = Enum.Font.GothamBold
-gameCountLabel.BackgroundTransparency = 1
-gameCountLabel.TextXAlignment = Enum.TextXAlignment.Left
-gameCountLabel.Parent = header
+local versionLabel = Instance.new("TextLabel")
 
--- ============================================
--- 🔧 КНОПКА ЗАКРЫТИЯ
--- ============================================
+versionLabel.Size = UDim2.new(0, 70, 1, 0)
+versionLabel.Position = UDim2.new(0, 180, 0, 0)
+versionLabel.BackgroundTransparency = 1
+versionLabel.Text = "v" .. VERSION
+versionLabel.TextColor3 = Theme.SubText
+versionLabel.TextSize = 12
+versionLabel.Font = Enum.Font.Gotham
+versionLabel.TextXAlignment = Enum.TextXAlignment.Left
+versionLabel.Parent = header
+
+-- minimize
+
+local minimize = Instance.new("TextButton")
+
+minimize.Size = UDim2.new(0, 36, 0, 36)
+minimize.Position = UDim2.new(1, -82, 0, 13)
+minimize.Text = "—"
+minimize.TextColor3 = Theme.Text
+minimize.TextSize = 20
+minimize.Font = Enum.Font.GothamBold
+minimize.BackgroundColor3 = Theme.Card
+minimize.BorderSizePixel = 0
+minimize.Parent = header
+
+addCorner(minimize, 9)
+
+-- close
+
 local close = Instance.new("TextButton")
-close.Size = UDim2.new(0, 34, 0, 34)
-close.Position = UDim2.new(0.92, -12, 0, 13)
-close.Text = "✕"
-close.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+close.Size = UDim2.new(0, 36, 0, 36)
+close.Position = UDim2.new(1, -40, 0, 13)
+close.Text = "×"
+close.TextColor3 = Theme.Text
 close.TextSize = 20
 close.Font = Enum.Font.GothamBold
-close.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-close.BackgroundTransparency = 0.2
+close.BackgroundColor3 = Color3.fromRGB(80, 35, 45)
 close.BorderSizePixel = 0
 close.Parent = header
 
-local closeCorner = Instance.new("UICorner")
-closeCorner.CornerRadius = UDim.new(0, 8)
-closeCorner.Parent = close
-
-close.MouseEnter:Connect(function()
-    TweenService:Create(close, TweenInfo.new(0.15), {BackgroundTransparency = 0, TextColor3 = Color3.fromRGB(255, 50, 50)}):Play()
-end)
-close.MouseLeave:Connect(function()
-    TweenService:Create(close, TweenInfo.new(0.15), {BackgroundTransparency = 0.2, TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
-end)
-
-close.MouseButton1Click:Connect(function()
-    clickSound:Play()
-    screen:Destroy()
-end)
+addCorner(close, 9)
 
 -- ============================================
--- 📋 ПОИСК
+-- 🖱️ CUSTOM DRAG
 -- ============================================
-local searchBox = Instance.new("TextBox")
-searchBox.Size = UDim2.new(1, -40, 0, 32)
-searchBox.Position = UDim2.new(0, 20, 0, 75)
-searchBox.BackgroundColor3 = Color3.fromRGB(30, 30, 60)
-searchBox.BackgroundTransparency = 0.3
-searchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-searchBox.PlaceholderText = "🔍 Поиск..."
-searchBox.PlaceholderColor3 = Color3.fromRGB(140, 140, 180)
-searchBox.TextSize = 14
-searchBox.Font = Enum.Font.Gotham
-searchBox.BorderSizePixel = 0
-searchBox.ClipsDescendants = true
-searchBox.Parent = frame
 
-local searchCorner = Instance.new("UICorner")
-searchCorner.CornerRadius = UDim.new(0, 8)
-searchCorner.Parent = searchBox
+local dragging = false
+local dragStart
+local startPosition
 
-searchBox.Focused:Connect(function()
-    TweenService:Create(searchBox, TweenInfo.new(0.2), {BackgroundTransparency = 0.1, BackgroundColor3 = Color3.fromRGB(50, 40, 100)}):Play()
-end)
-searchBox.FocusLost:Connect(function()
-    TweenService:Create(searchBox, TweenInfo.new(0.2), {BackgroundTransparency = 0.3, BackgroundColor3 = Color3.fromRGB(30, 30, 60)}):Play()
+header.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
+
+        dragging = true
+        dragStart = input.Position
+        startPosition = frame.Position
+    end
 end)
 
--- ============================================
--- 📂 КАТЕГОРИИ (СНИЗУ: ОБНОВЛЕНИЯ, ПОТОМ ИГРЫ)
--- ============================================
-local categoriesFrame = Instance.new("Frame")
-categoriesFrame.Size = UDim2.new(0, 120, 0, 300)
-categoriesFrame.Position = UDim2.new(0, 20, 0, 120)
-categoriesFrame.BackgroundTransparency = 1
-categoriesFrame.Parent = frame
+header.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
 
-local categoriesLayout = Instance.new("UIListLayout")
-categoriesLayout.FillDirection = Enum.FillDirection.Vertical
-categoriesLayout.Padding = UDim.new(0, 6)
-categoriesLayout.Parent = categoriesFrame
-
--- 1. КНОПКА "ОБНОВЛЕНИЯ" (СВЕРХУ)
-local updateBtn = Instance.new("TextButton")
-updateBtn.Size = UDim2.new(1, 0, 0, 36)
-updateBtn.Text = "📢 Обновления"
-updateBtn.TextColor3 = Color3.fromRGB(255, 200, 100)
-updateBtn.TextSize = 13
-updateBtn.Font = Enum.Font.GothamBold
-updateBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 60)
-updateBtn.BackgroundTransparency = 0.3
-updateBtn.BorderSizePixel = 0
-updateBtn.Parent = categoriesFrame
-
-local updateBtnCorner = Instance.new("UICorner")
-updateBtnCorner.CornerRadius = UDim.new(0, 8)
-updateBtnCorner.Parent = updateBtn
-
-updateBtn.MouseEnter:Connect(function()
-    TweenService:Create(updateBtn, TweenInfo.new(0.15), {BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(50, 40, 100)}):Play()
-end)
-updateBtn.MouseLeave:Connect(function()
-    TweenService:Create(updateBtn, TweenInfo.new(0.15), {BackgroundTransparency = 0.3, BackgroundColor3 = Color3.fromRGB(30, 30, 60)}):Play()
+        dragging = false
+    end
 end)
 
-local updateOpen = false
-local updateFrame = nil
-
-updateBtn.MouseButton1Click:Connect(function()
-    clickSound:Play()
-    if updateOpen then
-        TweenService:Create(updateFrame, TweenInfo.new(0.2), {BackgroundTransparency = 1}):Play()
-        task.wait(0.2)
-        updateFrame:Destroy()
-        updateOpen = false
+UserInputService.InputChanged:Connect(function(input)
+    if not dragging then
         return
     end
-    
-    updateOpen = true
-    updateFrame = Instance.new("Frame")
-    updateFrame.Size = UDim2.new(0, 350, 0, 180)
-    updateFrame.Position = UDim2.new(0.5, -175, 0.5, -90)
-    updateFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 30)
-    updateFrame.BackgroundTransparency = 0.15
-    updateFrame.BorderSizePixel = 0
-    updateFrame.ClipsDescendants = true
-    updateFrame.Parent = screen
-    
-    local updateCorner = Instance.new("UICorner")
-    updateCorner.CornerRadius = UDim.new(0, 16)
-    updateCorner.Parent = updateFrame
-    
-    local updateTitle = Instance.new("TextLabel")
-    updateTitle.Size = UDim2.new(1, 0, 0, 40)
-    updateTitle.Position = UDim2.new(0, 0, 0, 10)
-    updateTitle.Text = "📢 Обновления"
-    updateTitle.TextColor3 = Color3.fromRGB(255, 215, 0)
-    updateTitle.TextSize = 22
-    updateTitle.Font = Enum.Font.GothamBold
-    updateTitle.BackgroundTransparency = 1
-    updateTitle.Parent = updateFrame
-    
-    local updateText = Instance.new("TextLabel")
-    updateText.Size = UDim2.new(1, -20, 0, 80)
-    updateText.Position = UDim2.new(0, 10, 0, 50)
-    updateText.Text = "v29.0 — Финальная версия\n— Авто-поиск при запуске\n— Категория 'Игры' снизу\n— Звук и анимации"
-    updateText.TextColor3 = Color3.fromRGB(200, 200, 255)
-    updateText.TextSize = 14
-    updateText.Font = Enum.Font.Gotham
-    updateText.BackgroundTransparency = 1
-    updateText.TextWrapped = true
-    updateText.Parent = updateFrame
-    
-    local socialText = Instance.new("TextLabel")
-    socialText.Size = UDim2.new(1, -20, 0, 25)
-    socialText.Position = UDim2.new(0, 10, 0, 140)
-    socialText.Text = "🌐 GitHub: @ktoa4451-bot"
-    socialText.TextColor3 = Color3.fromRGB(150, 150, 200)
-    socialText.TextSize = 12
-    socialText.Font = Enum.Font.Gotham
-    socialText.BackgroundTransparency = 1
-    socialText.Parent = updateFrame
-    
-    local closeUpdate = Instance.new("TextButton")
-    closeUpdate.Size = UDim2.new(0, 30, 0, 30)
-    closeUpdate.Position = UDim2.new(1, -35, 0, 5)
-    closeUpdate.Text = "✕"
-    closeUpdate.TextColor3 = Color3.fromRGB(255, 100, 100)
-    closeUpdate.TextSize = 18
-    closeUpdate.Font = Enum.Font.GothamBold
-    closeUpdate.BackgroundTransparency = 1
-    closeUpdate.Parent = updateFrame
-    closeUpdate.MouseButton1Click:Connect(function()
-        clickSound:Play()
-        TweenService:Create(updateFrame, TweenInfo.new(0.2), {BackgroundTransparency = 1}):Play()
-        task.wait(0.2)
-        updateFrame:Destroy()
-        updateOpen = false
-    end)
-    
-    updateFrame.BackgroundTransparency = 1
-    TweenService:Create(updateFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.15}):Play()
-end)
 
--- 2. КНОПКА "ИГРЫ" (СНИЗУ)
-local gamesCategoryBtn = Instance.new("TextButton")
-gamesCategoryBtn.Size = UDim2.new(1, 0, 0, 36)
-gamesCategoryBtn.Text = "🎮 Игры"
-gamesCategoryBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-gamesCategoryBtn.TextSize = 14
-gamesCategoryBtn.Font = Enum.Font.GothamBold
-gamesCategoryBtn.BackgroundColor3 = Color3.fromRGB(60, 40, 150)
-gamesCategoryBtn.BackgroundTransparency = 0
-gamesCategoryBtn.BorderSizePixel = 0
-gamesCategoryBtn.Parent = categoriesFrame
+    if input.UserInputType ~= Enum.UserInputType.MouseMovement
+        and input.UserInputType ~= Enum.UserInputType.Touch then
+        return
+    end
 
-local gamesBtnCorner = Instance.new("UICorner")
-gamesBtnCorner.CornerRadius = UDim.new(0, 8)
-gamesBtnCorner.Parent = gamesCategoryBtn
+    local delta = input.Position - dragStart
 
-gamesCategoryBtn.MouseEnter:Connect(function()
-    TweenService:Create(gamesCategoryBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(80, 60, 200)}):Play()
-end)
-gamesCategoryBtn.MouseLeave:Connect(function()
-    TweenService:Create(gamesCategoryBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(60, 40, 150)}):Play()
-end)
-
-gamesCategoryBtn.MouseButton1Click:Connect(function()
-    clickSound:Play()
-    TweenService:Create(gamesCategoryBtn, TweenInfo.new(0.1, Enum.EasingStyle.Back), {Size = UDim2.new(1, 0, 0, 32)}):Play()
-    task.wait(0.1)
-    TweenService:Create(gamesCategoryBtn, TweenInfo.new(0.1, Enum.EasingStyle.Back), {Size = UDim2.new(1, 0, 0, 36)}):Play()
-    updateContent()
+    frame.Position = UDim2.new(
+        startPosition.X.Scale,
+        startPosition.X.Offset + delta.X,
+        startPosition.Y.Scale,
+        startPosition.Y.Offset + delta.Y
+    )
 end)
 
 -- ============================================
--- 📋 СПИСОК ИГР
+-- 🔍 SEARCH
 -- ============================================
-local contentFrame = Instance.new("ScrollingFrame")
-contentFrame.Size = UDim2.new(0, 430, 0, 320)
-contentFrame.Position = UDim2.new(0, 155, 0, 120)
-contentFrame.BackgroundTransparency = 1
-contentFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-contentFrame.ScrollBarThickness = 4
-contentFrame.ScrollBarImageColor3 = Color3.fromRGB(150, 100, 200)
-contentFrame.Parent = frame
 
-local contentLayout = Instance.new("UIListLayout")
-contentLayout.SortOrder = Enum.SortOrder.Name
-contentLayout.Padding = UDim.new(0, 6)
-contentLayout.Parent = contentFrame
+local searchBox = Instance.new("TextBox")
 
--- ============================================
--- 🎮 ОБНОВЛЕНИЕ СЧЁТЧИКОВ
--- ============================================
-local function updateCounters()
-    gameCountLabel.Text = "🎮 Игр: " .. #Games
-    onlineLabel.Text = "🟢 Онлайн: " .. #Players:GetPlayers()
-end
+searchBox.Size = UDim2.new(1, -40, 0, 40)
+searchBox.Position = UDim2.new(0, 20, 0, 76)
+searchBox.BackgroundColor3 = Theme.Card
+searchBox.BorderSizePixel = 0
+searchBox.ClearTextOnFocus = false
+searchBox.PlaceholderText = "🔍  Search games..."
+searchBox.PlaceholderColor3 = Theme.SubText
+searchBox.TextColor3 = Theme.Text
+searchBox.TextSize = 14
+searchBox.Font = Enum.Font.Gotham
+searchBox.TextXAlignment = Enum.TextXAlignment.Left
+searchBox.Parent = frame
 
-Players.PlayerAdded:Connect(updateCounters)
-Players.PlayerRemoving:Connect(updateCounters)
-updateCounters()
+addCorner(searchBox, 10)
+
+local searchPadding = Instance.new("UIPadding")
+searchPadding.PaddingLeft = UDim.new(0, 14)
+searchPadding.PaddingRight = UDim.new(0, 14)
+searchPadding.Parent = searchBox
 
 -- ============================================
--- 🎨 КНОПКИ ИГР
+-- 📊 GAME COUNT
 -- ============================================
-local function createGameButton(gameData)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 0, 36)
-    btn.Text = gameData.name
-    btn.TextColor3 = Color3.fromRGB(230, 230, 255)
-    btn.TextSize = 14
-    btn.TextXAlignment = Enum.TextXAlignment.Left
-    btn.Font = Enum.Font.GothamBold
-    btn.BackgroundColor3 = Color3.fromRGB(20, 20, 50)
-    btn.BackgroundTransparency = 0.2
-    btn.BorderSizePixel = 0
-    btn.Parent = contentFrame
-    btn.Name = gameData.name
-    
-    local btnCorner = Instance.new("UICorner")
-    btnCorner.CornerRadius = UDim.new(0, 8)
-    btnCorner.Parent = btn
-    
-    local padding = Instance.new("UIPadding")
-    padding.PaddingLeft = UDim.new(0, 15)
-    padding.Parent = btn
-    
-    local arrow = Instance.new("TextLabel")
-    arrow.Size = UDim2.new(0, 25, 1, 0)
-    arrow.Position = UDim2.new(1, -35, 0, 0)
-    arrow.Text = "▶"
-    arrow.TextColor3 = Color3.fromRGB(150, 100, 200)
-    arrow.TextSize = 16
-    arrow.BackgroundTransparency = 1
-    arrow.Parent = btn
-    
-    btn.MouseEnter:Connect(function()
-        TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(45, 35, 90)}):Play()
-        TweenService:Create(arrow, TweenInfo.new(0.2), {TextColor3 = Color3.fromRGB(255, 215, 0)}):Play()
-    end)
-    btn.MouseLeave:Connect(function()
-        TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.2, BackgroundColor3 = Color3.fromRGB(20, 20, 50)}):Play()
-        TweenService:Create(arrow, TweenInfo.new(0.2), {TextColor3 = Color3.fromRGB(150, 100, 200)}):Play()
-    end)
-    
-    btn.MouseButton1Click:Connect(function()
-        clickSound:Play()
-        TweenService:Create(btn, TweenInfo.new(0.1, Enum.EasingStyle.Back), {Size = UDim2.new(1, 0, 0, 32)}):Play()
-        task.wait(0.1)
-        TweenService:Create(btn, TweenInfo.new(0.1, Enum.EasingStyle.Back), {Size = UDim2.new(1, 0, 0, 36)}):Play()
-        
-        btn.Text = "⏳..."
-        arrow.Text = "⏳"
-        task.wait(0.15)
-        
-        local success = loadScript(gameData.link)
-        
-        if success then
-            btn.Text = "✅ " .. gameData.name
-            btn.BackgroundColor3 = Color3.fromRGB(30, 70, 30)
-            arrow.Text = "✅"
-        else
-            btn.Text = "❌ " .. gameData.name
-            btn.BackgroundColor3 = Color3.fromRGB(70, 30, 30)
-            arrow.Text = "❌"
+
+local countLabel = Instance.new("TextLabel")
+
+countLabel.Size = UDim2.new(0, 130, 0, 25)
+countLabel.Position = UDim2.new(0, 20, 0, 122)
+countLabel.BackgroundTransparency = 1
+countLabel.TextColor3 = Theme.SubText
+countLabel.TextSize = 12
+countLabel.Font = Enum.Font.GothamMedium
+countLabel.TextXAlignment = Enum.TextXAlignment.Left
+countLabel.Parent = frame
+
+-- ============================================
+-- 📜 CONTENT
+-- ============================================
+
+local content = Instance.new("ScrollingFrame")
+
+content.Size = UDim2.new(1, -40, 1, -175)
+content.Position = UDim2.new(0, 20, 0, 150)
+content.BackgroundTransparency = 1
+content.BorderSizePixel = 0
+content.ScrollBarThickness = 4
+content.ScrollBarImageColor3 = Theme.Accent
+content.CanvasSize = UDim2.new(0, 0, 0, 0)
+content.AutomaticCanvasSize = Enum.AutomaticSize.Y
+content.Parent = frame
+
+local layout = Instance.new("UIListLayout")
+
+layout.Padding = UDim.new(0, 7)
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout.Parent = content
+
+local contentPadding = Instance.new("UIPadding")
+contentPadding.PaddingBottom = UDim.new(0, 10)
+contentPadding.Parent = content
+
+-- ============================================
+-- 🔄 LOADER STATE
+-- ============================================
+
+local running = {}
+
+local function loadScript(gameData)
+    if running[gameData.name] then
+        return false, "Already loading"
+    end
+
+    running[gameData.name] = true
+
+    local success, result = pcall(function()
+
+        local source = game:HttpGet(gameData.link)
+
+        if not source or source == "" then
+            error("Empty response")
         end
-        
-        task.wait(1.5)
-        btn.Text = gameData.name
-        btn.BackgroundColor3 = Color3.fromRGB(20, 20, 50)
-        arrow.Text = "▶"
-        arrow.TextColor3 = Color3.fromRGB(150, 100, 200)
+
+        local compiled, compileError = loadstring(source)
+
+        if not compiled then
+            error(
+                "Compile error: "
+                .. tostring(compileError)
+            )
+        end
+
+        local executed, executeError = pcall(compiled)
+
+        if not executed then
+            error(
+                "Runtime error: "
+                .. tostring(executeError)
+            )
+        end
+
+        return true
     end)
+
+    running[gameData.name] = nil
+
+    if success and result then
+        return true
+    end
+
+    return false, tostring(result)
 end
 
 -- ============================================
--- 🔧 ОБНОВЛЕНИЕ КОНТЕНТА
+-- 🎮 GAME BUTTON
 -- ============================================
-local function updateContent()
-    for _, child in ipairs(contentFrame:GetChildren()) do
-        if child:IsA("TextButton") then child:Destroy() end
+
+local function createGameButton(gameData, index)
+
+    local button = Instance.new("TextButton")
+
+    button.Name = gameData.name
+    button.Size = UDim2.new(1, 0, 0, 52)
+    button.BackgroundColor3 = Theme.Card
+    button.BorderSizePixel = 0
+    button.Text = ""
+    button.AutoButtonColor = false
+    button.LayoutOrder = index
+    button.Parent = content
+
+    addCorner(button, 11)
+
+    -- icon
+
+    local icon = Instance.new("TextLabel")
+
+    icon.Size = UDim2.new(0, 40, 1, 0)
+    icon.Position = UDim2.new(0, 8, 0, 0)
+    icon.BackgroundTransparency = 1
+    icon.Text = "🎮"
+    icon.TextSize = 19
+    icon.Parent = button
+
+    -- name
+
+    local name = Instance.new("TextLabel")
+
+    name.Size = UDim2.new(1, -90, 1, 0)
+    name.Position = UDim2.new(0, 52, 0, 0)
+    name.BackgroundTransparency = 1
+    name.Text = gameData.name
+    name.TextColor3 = Theme.Text
+    name.TextSize = 14
+    name.Font = Enum.Font.GothamMedium
+    name.TextXAlignment = Enum.TextXAlignment.Left
+    name.Parent = button
+
+    -- arrow
+
+    local arrow = Instance.new("TextLabel")
+
+    arrow.Size = UDim2.new(0, 30, 1, 0)
+    arrow.Position = UDim2.new(1, -38, 0, 0)
+    arrow.BackgroundTransparency = 1
+    arrow.Text = "›"
+    arrow.TextColor3 = Theme.SubText
+    arrow.TextSize = 25
+    arrow.Font = Enum.Font.GothamBold
+    arrow.Parent = button
+
+    -- hover
+
+    button.MouseEnter:Connect(function()
+
+        tween(
+            button,
+            TweenInfo.new(0.15),
+            {
+                BackgroundColor3 = Theme.CardHover
+            }
+        ):Play()
+
+        tween(
+            arrow,
+            TweenInfo.new(0.15),
+            {
+                TextColor3 = Theme.Gold
+            }
+        ):Play()
+    end)
+
+    button.MouseLeave:Connect(function()
+
+        tween(
+            button,
+            TweenInfo.new(0.15),
+            {
+                BackgroundColor3 = Theme.Card
+            }
+        ):Play()
+
+        tween(
+            arrow,
+            TweenInfo.new(0.15),
+            {
+                TextColor3 = Theme.SubText
+            }
+        ):Play()
+    end)
+
+    -- click
+
+    button.MouseButton1Click:Connect(function()
+
+        if running[gameData.name] then
+            notify(
+                "⏳ " .. gameData.name .. " уже загружается",
+                Theme.Warning
+            )
+
+            return
+        end
+
+        playClick()
+
+        name.Text = "Загрузка..."
+        icon.Text = "⏳"
+        arrow.Text = "..."
+
+        button.Active = false
+
+        task.spawn(function()
+
+            local success, errorMessage =
+                loadScript(gameData)
+
+            if success then
+
+                icon.Text = "✓"
+                arrow.Text = "✓"
+                name.Text = gameData.name
+
+                tween(
+                    button,
+                    TweenInfo.new(0.2),
+                    {
+                        BackgroundColor3 = Color3.fromRGB(25, 65, 45)
+                    }
+                ):Play()
+
+                notify(
+                    "✓ " .. gameData.name .. " загружен",
+                    Theme.Success
+                )
+
+                task.wait(1)
+
+            else
+
+                icon.Text = "!"
+                arrow.Text = "!"
+                name.Text = gameData.name
+
+                tween(
+                    button,
+                    TweenInfo.new(0.2),
+                    {
+                        BackgroundColor3 = Color3.fromRGB(70, 30, 40)
+                    }
+                ):Play()
+
+                notify(
+                    "✕ Ошибка: " .. gameData.name,
+                    Theme.Error
+                )
+
+                warn(
+                    "[Lunar Hub] "
+                    .. gameData.name
+                    .. ": "
+                    .. tostring(errorMessage)
+                )
+
+                task.wait(1.5)
+            end
+
+            button.Active = true
+
+            tween(
+                button,
+                TweenInfo.new(0.25),
+                {
+                    BackgroundColor3 = Theme.Card
+                }
+            ):Play()
+
+            icon.Text = "🎮"
+            arrow.Text = "›"
+        end)
+    end)
+
+    return button
+end
+
+-- ============================================
+-- 🔎 SEARCH / FILTER
+-- ============================================
+
+local buttons = {}
+
+local function sortGames()
+    local copy = {}
+
+    for _, gameData in ipairs(Games) do
+        table.insert(copy, gameData)
     end
-    
-    local gamesToShow = {}
-    local searchText = searchBox.Text:lower()
-    
-    for _, game in ipairs(Games) do
-        table.insert(gamesToShow, game)
-    end
-    
-    if searchText ~= "" then
-        local filtered = {}
-        for _, game in ipairs(gamesToShow) do
-            if string.find(string.lower(game.name), searchText) then
-                table.insert(filtered, game)
+
+    table.sort(copy, function(a, b)
+        return a.name:lower() < b.name:lower()
+    end)
+
+    return copy
+end
+
+local sortedGames = sortGames()
+
+for index, gameData in ipairs(sortedGames) do
+
+    local button = createGameButton(
+        gameData,
+        index
+    )
+
+    buttons[gameData.name] = button
+end
+
+local function filterGames()
+
+    local query = searchBox.Text:lower()
+
+    local visible = 0
+
+    for _, gameData in ipairs(sortedGames) do
+
+        local button = buttons[gameData.name]
+
+        if button then
+
+            local matches =
+                query == ""
+                or gameData.name:lower():find(query, 1, true)
+
+            button.Visible = matches
+
+            if matches then
+                visible += 1
+                button.LayoutOrder = visible
             end
         end
-        gamesToShow = filtered
     end
-    
-    table.sort(gamesToShow, function(a, b) return a.name < b.name end)
-    
-    for _, game in ipairs(gamesToShow) do
-        createGameButton(game)
-    end
-    
-    contentFrame.CanvasSize = UDim2.new(0, 0, 0, #gamesToShow * 42 + 10)
-    updateCounters()
+
+    countLabel.Text =
+        "🎮 "
+        .. visible
+        .. " / "
+        .. #Games
+        .. " games"
 end
 
--- ============================================
--- 🔍 ПОИСК
--- ============================================
-searchBox:GetPropertyChangedSignal("Text"):Connect(function()
-    updateContent()
-end)
+searchBox:GetPropertyChangedSignal("Text"):Connect(
+    filterGames
+)
+
+filterGames()
 
 -- ============================================
--- ⌨️ ГОРЯЧАЯ КЛАВИША Ctrl+F
+-- ⌨️ CTRL + F
 -- ============================================
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if gameProcessed then return end
-    if input.KeyCode == Enum.KeyCode.F and UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
-        searchBox:CaptureFocus()
-    end
-end)
 
--- ============================================
--- 🚀 ЗАПУСК (С АВТО-НАЖАТИЕМ НА ПОИСК)
--- ============================================
-local function finalStart()
-    updateLoading(10, "Создание интерфейса")
-    task.wait(0.2)
-    
-    updateLoading(25, "Загрузка игр")
-    task.wait(0.2)
-    
-    updateLoading(40, "Настройка категорий")
-    task.wait(0.2)
-    
-    updateLoading(55, "Подготовка меню")
-    task.wait(0.2)
-    
-    updateLoading(70, "Создание кнопок")
-    task.wait(0.2)
-    
-    frame.Visible = true
-    task.wait(0.2)
-    
-    -- АНИМАЦИЯ ПОЯВЛЕНИЯ
-    frame.Size = UDim2.new(0, 0, 0, 0)
-    local openAnim = TweenService:Create(
-        frame,
-        TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
-        {Size = UDim2.new(0, 600, 0, 480)}
-    )
-    openAnim:Play()
-    
-    updateLoading(85, "Финальная настройка")
-    task.wait(0.2)
-    
-    -- ============================================
-    -- 🔥 АВТО-НАЖАТИЕ НА ПОИСК
-    -- ============================================
-    searchBox.Text = ""
-    updateContent()
-    task.wait(0.1)
-    updateContent()  -- Двойной вызов для гарантии
-    -- ============================================
-    
-    updateLoading(100, "Готово!")
-    task.wait(0.4)
-    
-    loadingFrame:Destroy()
-    
-    print("✅ Lunar Hub v29.0 loaded! (" .. #Games .. " games)")
-    print("🟢 Online: " .. #Players:GetPlayers())
-    print("🔍 Авто-поиск активирован!")
-end
-
-task.wait(0.2)
-finalStart()
+UserInputService.InputBegan:Connect(function(
+    input,
+    proces
