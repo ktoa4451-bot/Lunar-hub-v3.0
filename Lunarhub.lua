@@ -98,7 +98,7 @@ local Games = {
         Name = "99 Nights in Forest",
         Category = "Games",
         Description = "99 Nights in the Forest",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/99Nights.lua"
+        Link = "https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua"
     },
 
     {
