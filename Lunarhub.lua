@@ -42,14 +42,14 @@ local Games = {
         Name = "MM2",
         Category = "Games",
         Description = "Murder Mystery 2",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/MM2.lua"
+        Link = "https://raw.githubusercontent.com/pruzgar242-rgb/Update/refs/heads/main/out.lua%20(17).txt"
     },
 
     {
         Name = "1+ Speed Keyboard",
         Category = "Games",
         Description = "Speed Keyboard",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/SpeedKeyboard.lua"
+        Link = "https://api.luarmor.net/files/v4/loaders/385c6d8937bfc4ef284dc8c27b50e1c5.lua"
     },
 
     {
