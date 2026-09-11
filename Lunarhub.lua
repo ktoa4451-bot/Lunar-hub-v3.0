@@ -41,6 +41,24 @@ local Games = {
         Description = "Steal the egg",
         Link = "https://raw.githubusercontent.com/PulseZax/Loader/refs/heads/main/.lua"
     },
+
+    {
+        Name = "prison life",
+        Description = "prison life",
+        Link = "https://raw.githubusercontent.com/yourhighnesskei/Reformation/refs/heads/main/Loader.lua"
+    },
+
+    {
+        Name = "lost front",
+        Description = "lost front",
+        Link = "https://raw.githubusercontent.com/Bac0nHck/Scripts/refs/heads/main/TheLostFront.lua"
+    },
+
+    {
+        Name = "flick",
+        Description = "flick",
+        Link = "https://raw.githubusercontent.com/GLAMOHGA/fling/refs/heads/main/ФЛИК%20FLICK.md"
+    },
     
     {
         Name = "Muscle Legends",
