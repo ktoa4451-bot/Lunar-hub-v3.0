@@ -56,21 +56,21 @@ local Games = {
         Name = "Merge Nuke",
         Category = "Games",
         Description = "Merge Nuke",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/MergeNuke.lua"
+        Link = "https://raw.githubusercontent.com/gumanba/Scripts/main/MergeaNuke"
     },
 
     {
         Name = "MorphUp",
         Category = "Games",
         Description = "MorphUp",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/MorphUp.lua"
+        Link = "https://raw.githubusercontent.com/gumanba/Scripts/main/MorphUp"
     },
 
     {
         Name = "1 Magic Evolution",
         Category = "Games",
         Description = "1 Magic Evolution",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/1MagicEvolution.lua"
+        Link = "https://raw.githubusercontent.com/gumanba/Scripts/main/1MagicEvolution"
     },
 
     {
