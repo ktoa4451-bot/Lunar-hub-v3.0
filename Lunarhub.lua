@@ -21,16 +21,28 @@ local Theme = {
     Background = Color3.fromRGB(15, 15, 22),
     Secondary = Color3.fromRGB(22, 22, 32),
     Card = Color3.fromRGB(27, 27, 39),
-
     Accent = Color3.fromRGB(145, 85, 255),
     AccentDark = Color3.fromRGB(105, 55, 200),
-
     Text = Color3.fromRGB(245, 245, 250),
     SubText = Color3.fromRGB(165, 165, 180),
-
     Success = Color3.fromRGB(80, 220, 130),
     Error = Color3.fromRGB(255, 80, 95),
     Warning = Color3.fromRGB(255, 190, 70)
+}
+
+--------------------------------------------------
+-- GAMES
+--------------------------------------------------
+
+local Games = {
+
+    -- Пример:
+    -- {
+    --     Name = "Forsaken",
+    --     Description = "Forsaken script",
+    --     Link = "ТВОЯ_РАБОЧАЯ_ССЫЛКА"
+    -- },
+
 }
 
 --------------------------------------------------
@@ -107,7 +119,7 @@ local function Notify(title, message, notificationType)
         Size = UDim2.new(0, 4, 1, 0)
     })
 
-    Create("TextLabel", {
+    local titleLabel = Create("TextLabel", {
         Parent = notification,
         BackgroundTransparency = 1,
         Position = UDim2.new(0, 16, 0, 9),
@@ -119,7 +131,7 @@ local function Notify(title, message, notificationType)
         TextXAlignment = Enum.TextXAlignment.Left
     })
 
-    Create("TextLabel", {
+    local messageLabel = Create("TextLabel", {
         Parent = notification,
         BackgroundTransparency = 1,
         Position = UDim2.new(0, 16, 0, 31),
@@ -157,7 +169,9 @@ local function Notify(title, message, notificationType)
             if notification then
                 notification:Destroy()
             end
+
         end
+
     end)
 end
 
@@ -304,8 +318,11 @@ TopBar.InputBegan:Connect(function(input)
             if input.UserInputState == Enum.UserInputState.End then
                 dragging = false
             end
+
         end)
+
     end
+
 end)
 
 UserInputService.InputChanged:Connect(function(input)
@@ -322,11 +339,12 @@ UserInputService.InputChanged:Connect(function(input)
         Main.Position = UDim2.new(
             startPosition.X.Scale,
             startPosition.X.Offset + delta.X,
-
             startPosition.Y.Scale,
             startPosition.Y.Offset + delta.Y
         )
+
     end
+
 end)
 
 --------------------------------------------------
@@ -366,15 +384,45 @@ local Content = Create("Frame", {
 })
 
 --------------------------------------------------
--- GAMES CATEGORY
+-- SEARCH
+--------------------------------------------------
+
+local SearchBox = Create("TextBox", {
+    Parent = Content,
+    BackgroundColor3 = Theme.Card,
+    BorderSizePixel = 0,
+    Position = UDim2.new(0, 15, 0, 15),
+    Size = UDim2.new(1, -30, 0, 38),
+    Font = Enum.Font.Gotham,
+    PlaceholderText = "Search games...",
+    PlaceholderColor3 = Theme.SubText,
+    Text = "",
+    TextColor3 = Theme.Text,
+    TextSize = 13,
+    ClearTextOnFocus = false
+})
+
+Create("UICorner", {
+    Parent = SearchBox,
+    CornerRadius = UDim.new(0, 9)
+})
+
+Create("UIPadding", {
+    Parent = SearchBox,
+    PaddingLeft = UDim.new(0, 12),
+    PaddingRight = UDim.new(0, 12)
+})
+
+--------------------------------------------------
+-- GAME LIST
 --------------------------------------------------
 
 local GameList = Create("ScrollingFrame", {
     Parent = Content,
     BackgroundTransparency = 1,
     BorderSizePixel = 0,
-    Position = UDim2.new(0, 15, 0, 15),
-    Size = UDim2.new(1, -30, 1, -30),
+    Position = UDim2.new(0, 15, 0, 65),
+    Size = UDim2.new(1, -30, 1, -80),
     CanvasSize = UDim2.new(0, 0, 0, 0),
     AutomaticCanvasSize = Enum.AutomaticSize.Y,
     ScrollBarThickness = 3,
@@ -393,42 +441,103 @@ Create("UIPadding", {
 })
 
 --------------------------------------------------
--- SIDEBAR BUTTON
+-- GAME BUTTON CREATOR
 --------------------------------------------------
 
-local function CreateSidebarButton(text, order)
+local GameButtons = {}
+
+local function CreateGameButton(gameData)
 
     local button = Create("TextButton", {
-        Parent = Sidebar,
-        BackgroundColor3 = Theme.Secondary,
+        Parent = GameList,
+        BackgroundColor3 = Theme.Card,
         BorderSizePixel = 0,
-        Size = UDim2.new(1, 0, 0, 38),
-        Font = Enum.Font.GothamMedium,
-        Text = text,
-        TextColor3 = Theme.SubText,
-        TextSize = 12,
+        Size = UDim2.new(1, 0, 0, 62),
         AutoButtonColor = false,
-        LayoutOrder = order
+        Text = ""
     })
 
     Create("UICorner", {
         Parent = button,
-        CornerRadius = UDim.new(0, 8)
+        CornerRadius = UDim.new(0, 10)
+    })
+
+    local icon = Create("Frame", {
+        Parent = button,
+        BackgroundColor3 = Theme.AccentDark,
+        BorderSizePixel = 0,
+        Position = UDim2.new(0, 10, 0.5, -20),
+        Size = UDim2.new(0, 40, 0, 40)
+    })
+
+    Create("UICorner", {
+        Parent = icon,
+        CornerRadius = UDim.new(0, 9)
+    })
+
+    Create("TextLabel", {
+        Parent = icon,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, 0, 1, 0),
+        Font = Enum.Font.GothamBold,
+        Text = "🌙",
+        TextColor3 = Theme.Text,
+        TextSize = 18
+    })
+
+    local nameLabel = Create("TextLabel", {
+        Parent = button,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 62, 0, 10),
+        Size = UDim2.new(1, -75, 0, 20),
+        Font = Enum.Font.GothamBold,
+        Text = gameData.Name,
+        TextColor3 = Theme.Text,
+        TextSize = 13,
+        TextXAlignment = Enum.TextXAlignment.Left
+    })
+
+    local descriptionLabel = Create("TextLabel", {
+        Parent = button,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 62, 0, 31),
+        Size = UDim2.new(1, -75, 0, 18),
+        Font = Enum.Font.Gotham,
+        Text = gameData.Description or "No description",
+        TextColor3 = Theme.SubText,
+        TextSize = 10,
+        TextXAlignment = Enum.TextXAlignment.Left
+    })
+
+    local arrow = Create("TextLabel", {
+        Parent = button,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(1, -32, 0.5, -10),
+        Size = UDim2.new(0, 20, 0, 20),
+        Font = Enum.Font.GothamBold,
+        Text = "›",
+        TextColor3 = Theme.SubText,
+        TextSize = 20
     })
 
     button.MouseEnter:Connect(function()
 
-        if button.TextColor3 ~= Theme.Text then
+        Tween(
+            button,
+            {
+                BackgroundColor3 = Color3.fromRGB(34, 34, 48)
+            },
+            0.15
+        )
 
-            Tween(
-                button,
-                {
-                    BackgroundColor3 = Theme.Card,
-                    TextColor3 = Theme.Text
-                },
-                0.15
-            )
-        end
+        Tween(
+            arrow,
+            {
+                TextColor3 = Theme.Accent
+            },
+            0.15
+        )
+
     end)
 
     button.MouseLeave:Connect(function()
@@ -436,26 +545,147 @@ local function CreateSidebarButton(text, order)
         Tween(
             button,
             {
-                BackgroundColor3 = Theme.Secondary
+                BackgroundColor3 = Theme.Card
             },
             0.15
         )
+
+        Tween(
+            arrow,
+            {
+                TextColor3 = Theme.SubText
+            },
+            0.15
+        )
+
     end)
+        button.MouseButton1Click:Connect(function()
+
+        if not gameData.Link or gameData.Link == "" then
+            Notify(
+                "Lunar Hub",
+                "Для этой игры не указана ссылка.",
+                "warning"
+            )
+            return
+        end
+
+        Notify(
+            "Lunar Hub",
+            "Загрузка " .. gameData.Name .. "...",
+            "success"
+        )
+
+        task.spawn(function()
+
+            local success, result = pcall(function()
+
+                return loadstring(
+                    game:HttpGet(gameData.Link)
+                )()
+
+            end)
+
+            if success then
+
+                Notify(
+                    "Lunar Hub",
+                    gameData.Name .. " успешно загружен!",
+                    "success"
+                )
+
+            else
+
+                warn(
+                    "[Lunar Hub] Ошибка загрузки " ..
+                    gameData.Name .. ": " ..
+                    tostring(result)
+                )
+
+                Notify(
+                    "Lunar Hub",
+                    "Ошибка загрузки " .. gameData.Name,
+                    "error"
+                )
+
+            end
+
+        end)
+
+    end)
+
+    table.insert(GameButtons, {
+        Button = button,
+        Data = gameData
+    })
 
     return button
 end
 
-local GamesButton = CreateSidebarButton(
-    "🎮  Games",
-    1
-)
-
-local UpdatesButton = CreateSidebarButton(
-    "🔄  Updates",
-    2
-)
 --------------------------------------------------
--- UPDATE PAGE
+-- CREATE ALL GAME BUTTONS
+--------------------------------------------------
+
+for _, gameData in ipairs(Games) do
+    CreateGameButton(gameData)
+end
+
+--------------------------------------------------
+-- SEARCH SYSTEM
+--------------------------------------------------
+
+SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+
+    local searchText = string.lower(
+        SearchBox.Text or ""
+    )
+
+    for _, gameButton in ipairs(GameButtons) do
+
+        local gameName = string.lower(
+            gameButton.Data.Name or ""
+        )
+
+        local description = string.lower(
+            gameButton.Data.Description or ""
+        )
+
+        if searchText == ""
+            or string.find(gameName, searchText, 1, true)
+            or string.find(description, searchText, 1, true) then
+
+            gameButton.Button.Visible = true
+
+        else
+
+            gameButton.Button.Visible = false
+
+        end
+
+    end
+
+end)
+
+--------------------------------------------------
+-- EMPTY GAMES MESSAGE
+--------------------------------------------------
+
+local EmptyGames = Create("TextLabel", {
+    Parent = Content,
+    BackgroundTransparency = 1,
+    Position = UDim2.new(0, 15, 0, 125),
+    Size = UDim2.new(1, -30, 0, 60),
+    Font = Enum.Font.Gotham,
+    Text = "Игры пока не добавлены",
+    TextColor3 = Theme.SubText,
+    TextSize = 14,
+    TextXAlignment = Enum.TextXAlignment.Center,
+    TextYAlignment = Enum.TextYAlignment.Center,
+    Visible = #Games == 0
+})
+
+--------------------------------------------------
+-- UPDATES PAGE
 --------------------------------------------------
 
 local UpdatePage = Create("Frame", {
@@ -468,24 +698,49 @@ local UpdatePage = Create("Frame", {
 local UpdateTitle = Create("TextLabel", {
     Parent = UpdatePage,
     BackgroundTransparency = 1,
-    Position = UDim2.new(0, 20, 0, 20),
-    Size = UDim2.new(1, -40, 0, 30),
+    Position = UDim2.new(0, 15, 0, 20),
+    Size = UDim2.new(1, -30, 0, 30),
     Font = Enum.Font.GothamBold,
-    Text = "🔄 Updates",
+    Text = "Updates",
     TextColor3 = Theme.Text,
     TextSize = 20,
     TextXAlignment = Enum.TextXAlignment.Left
 })
 
-local UpdateInfo = Create("TextLabel", {
+local UpdateVersion = Create("TextLabel", {
     Parent = UpdatePage,
     BackgroundTransparency = 1,
-    Position = UDim2.new(0, 20, 0, 60),
-    Size = UDim2.new(1, -40, 0, 100),
+    Position = UDim2.new(0, 15, 0, 53),
+    Size = UDim2.new(1, -30, 0, 25),
     Font = Enum.Font.Gotham,
-    Text = "Lunar Hub v" .. VERSION ..
-        "\n\nThis version contains the latest interface updates.",
+    Text = "Current version: v" .. VERSION,
     TextColor3 = Theme.SubText,
+    TextSize = 12,
+    TextXAlignment = Enum.TextXAlignment.Left
+})
+
+local UpdateCard = Create("Frame", {
+    Parent = UpdatePage,
+    BackgroundColor3 = Theme.Card,
+    BorderSizePixel = 0,
+    Position = UDim2.new(0, 15, 0, 95),
+    Size = UDim2.new(1, -30, 0, 120)
+})
+
+Create("UICorner", {
+    Parent = UpdateCard,
+    CornerRadius = UDim.new(0, 10)
+})
+
+local UpdateText = Create("TextLabel", {
+    Parent = UpdateCard,
+    BackgroundTransparency = 1,
+    Position = UDim2.new(0, 15, 0, 15),
+    Size = UDim2.new(1, -30, 1, -30),
+    Font = Enum.Font.Gotham,
+    Text = "🌙 Lunar Hub v" .. VERSION ..
+        "\n\nModern UI / Stable Loader",
+    TextColor3 = Theme.Text,
     TextSize = 13,
     TextWrapped = true,
     TextXAlignment = Enum.TextXAlignment.Left,
@@ -493,20 +748,70 @@ local UpdateInfo = Create("TextLabel", {
 })
 
 --------------------------------------------------
--- EMPTY GAMES MESSAGE
+-- SIDEBAR BUTTON
 --------------------------------------------------
 
-local EmptyGames = Create("TextLabel", {
-    Parent = GameList,
-    BackgroundTransparency = 1,
-    Size = UDim2.new(1, 0, 0, 80),
-    Font = Enum.Font.GothamMedium,
-    Text = "🎮  No games available",
-    TextColor3 = Theme.SubText,
-    TextSize = 14,
-    TextXAlignment = Enum.TextXAlignment.Center,
-    TextYAlignment = Enum.TextYAlignment.Center
-})
+local function CreateSidebarButton(text, order)
+
+    local button = Create("TextButton", {
+        Parent = Sidebar,
+        BackgroundColor3 = Theme.Secondary,
+        BorderSizePixel = 0,
+        Size = UDim2.new(1, 0, 0, 42),
+        LayoutOrder = order,
+        AutoButtonColor = false,
+        Font = Enum.Font.GothamMedium,
+        Text = text,
+        TextColor3 = Theme.SubText,
+        TextSize = 12
+    })
+
+    Create("UICorner", {
+        Parent = button,
+        CornerRadius = UDim.new(0, 9)
+    })
+
+    button.MouseEnter:Connect(function()
+
+        Tween(
+            button,
+            {
+                BackgroundColor3 = Theme.Card,
+                TextColor3 = Theme.Text
+            },
+            0.15
+        )
+
+    end)
+
+    button.MouseLeave:Connect(function()
+
+        Tween(
+            button,
+            {
+                BackgroundColor3 = Theme.Secondary
+            },
+            0.15
+        )
+
+    end)
+
+    return button
+end
+
+--------------------------------------------------
+-- SIDEBAR BUTTONS
+--------------------------------------------------
+
+local GamesButton = CreateSidebarButton(
+    "🎮  Games",
+    1
+)
+
+local UpdatesButton = CreateSidebarButton(
+    "🔄  Updates",
+    2
+)
 
 --------------------------------------------------
 -- PAGE SWITCHING
@@ -515,41 +820,89 @@ local EmptyGames = Create("TextLabel", {
 local function ShowGames()
 
     GameList.Visible = true
+    SearchBox.Visible = true
     UpdatePage.Visible = false
 
-    GamesButton.BackgroundColor3 = Theme.Card
-    GamesButton.TextColor3 = Theme.Text
+    EmptyGames.Visible = #Games == 0
 
-    UpdatesButton.BackgroundColor3 = Theme.Secondary
-    UpdatesButton.TextColor3 = Theme.SubText
+    Tween(
+        GamesButton,
+        {
+            BackgroundColor3 = Theme.Card,
+            TextColor3 = Theme.Text
+        },
+        0.15
+    )
+
+    Tween(
+        UpdatesButton,
+        {
+            BackgroundColor3 = Theme.Secondary,
+            TextColor3 = Theme.SubText
+        },
+        0.15
+    )
+
 end
 
 local function ShowUpdates()
 
     GameList.Visible = false
+    SearchBox.Visible = false
+    EmptyGames.Visible = false
     UpdatePage.Visible = true
 
-    UpdatesButton.BackgroundColor3 = Theme.Card
-    UpdatesButton.TextColor3 = Theme.Text
+    Tween(
+        GamesButton,
+        {
+            BackgroundColor3 = Theme.Secondary,
+            TextColor3 = Theme.SubText
+        },
+        0.15
+    )
 
-    GamesButton.BackgroundColor3 = Theme.Secondary
-    GamesButton.TextColor3 = Theme.SubText
+    Tween(
+        UpdatesButton,
+        {
+            BackgroundColor3 = Theme.Card,
+            TextColor3 = Theme.Text
+        },
+        0.15
+    )
+
 end
 
-GamesButton.MouseButton1Click:Connect(function()
-    ShowGames()
-end)
+GamesButton.MouseButton1Click:Connect(
+    ShowGames
+)
 
-UpdatesButton.MouseButton1Click:Connect(function()
-    ShowUpdates()
-end)
+UpdatesButton.MouseButton1Click:Connect(
+    ShowUpdates
+)
+
+--------------------------------------------------
+-- NOTIFICATION HOLDER
+--------------------------------------------------
+
+notificationHolder = Create("Frame", {
+    Parent = ScreenGui,
+    BackgroundTransparency = 1,
+    Position = UDim2.new(1, -250, 0, 20),
+    Size = UDim2.new(0, 230, 0, 300)
+})
+
+Create("UIListLayout", {
+    Parent = notificationHolder,
+    Padding = UDim.new(0, 8),
+    HorizontalAlignment = Enum.HorizontalAlignment.Right,
+    SortOrder = Enum.SortOrder.LayoutOrder
+})
 
 --------------------------------------------------
 -- MINIMIZE
 --------------------------------------------------
 
 local minimized = false
-local normalSize = Main.Size
 
 MinimizeButton.MouseButton1Click:Connect(function()
 
@@ -560,29 +913,29 @@ MinimizeButton.MouseButton1Click:Connect(function()
         Tween(
             Main,
             {
-                Size = UDim2.new(
-                    normalSize.X.Scale,
-                    normalSize.X.Offset,
-                    0,
-                    55
-                )
+                Size = UDim2.new(0, 600, 0, 55)
             },
             0.25
         )
 
-        MinimizeButton.Text = "+"
+        Sidebar.Visible = false
+        Content.Visible = false
+
     else
+
+        Sidebar.Visible = true
+        Content.Visible = true
 
         Tween(
             Main,
             {
-                Size = normalSize
+                Size = UDim2.new(0, 600, 0, 480)
             },
             0.25
         )
 
-        MinimizeButton.Text = "—"
     end
+
 end)
 
 --------------------------------------------------
@@ -594,73 +947,16 @@ CloseButton.MouseButton1Click:Connect(function()
     Tween(
         Main,
         {
-            Size = UDim2.new(0, 0, 0, 0)
+            Size = UDim2.new(0, 600, 0, 0)
         },
         0.25
     )
 
-    task.wait(0.3)
+    task.wait(0.25)
 
-    if ScreenGui then
-        ScreenGui:Destroy()
-    end
+    ScreenGui:Destroy()
+
 end)
-
---------------------------------------------------
--- BUTTON HOVER
---------------------------------------------------
-
-MinimizeButton.MouseEnter:Connect(function()
-
-    Tween(
-        MinimizeButton,
-        {
-            BackgroundColor3 = Theme.Card
-        },
-        0.15
-    )
-end)
-
-CloseButton.MouseEnter:Connect(function()
-
-    Tween(
-        CloseButton,
-        {
-            BackgroundColor3 = Theme.Error
-        },
-        0.15
-    )
-end)
-
-CloseButton.MouseLeave:Connect(function()
-
-    Tween(
-        CloseButton,
-        {
-            BackgroundColor3 = Theme.Card
-        },
-        0.15
-    )
-end)
-
---------------------------------------------------
--- NOTIFICATION HOLDER
---------------------------------------------------
-
-notificationHolder = Create("Frame", {
-    Parent = ScreenGui,
-    BackgroundTransparency = 1,
-    Position = UDim2.new(1, -320, 0, 20),
-    Size = UDim2.new(0, 300, 0, 400)
-})
-
-Create("UIListLayout", {
-    Parent = notificationHolder,
-    Padding = UDim.new(0, 8),
-    HorizontalAlignment = Enum.HorizontalAlignment.Right,
-    VerticalAlignment = Enum.VerticalAlignment.Top,
-    SortOrder = Enum.SortOrder.LayoutOrder
-})
 
 --------------------------------------------------
 -- STARTUP
@@ -668,14 +964,10 @@ Create("UIListLayout", {
 
 ShowGames()
 
-task.wait(0.5)
+task.wait(0.2)
 
 Notify(
-    "🌙 Lunar Hub",
-    "Lunar Hub v" .. VERSION .. " loaded!",
+    "Lunar Hub",
+    "Lunar Hub v" .. VERSION .. " запущен!",
     "success"
 )
-
---------------------------------------------------
--- END
---------------------------------------------------
