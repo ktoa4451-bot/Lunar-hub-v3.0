@@ -35,7 +35,7 @@ local Games = {
         Name = "Forsaken",
         Category = "Games",
         Description = "Forsaken scripts",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/Forsaken.lua"
+        Link = "https://raw.githubusercontent.com/zxcursedsocute/Forsaken-Script/refs/heads/main/lua"
     },
 
     {
@@ -43,27 +43,6 @@ local Games = {
         Category = "Games",
         Description = "Murder Mystery 2",
         Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/MM2.lua"
-    },
-
-    {
-        Name = "Rivals",
-        Category = "Games",
-        Description = "Rivals scripts",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/Rivals.lua"
-    },
-
-    {
-        Name = "Slap Battles",
-        Category = "Games",
-        Description = "Slap Battles",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/SlapBattles.lua"
-    },
-
-    {
-        Name = "King Legacy",
-        Category = "Games",
-        Description = "King Legacy",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/KingLegacy.lua"
     },
 
     {
@@ -105,28 +84,9 @@ local Games = {
         Name = "Survive Zombie Arena",
         Category = "Games",
         Description = "Survive Zombie Arena",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/SurviveZombieArena.lua"
+        Link = "https://raw.githubusercontent.com/caomod2077/Script/main/Foxname_SZA.lua"
     },
 
-    {
-        Name = "Color or Die",
-        Category = "Games",
-        Description = "Color or Die",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/ColorOrDie.lua"
-    },
-
-    {
-        Name = "Rost Alpha Premium",
-        Category = "Games",
-        Description = "Rost Alpha Premium",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/RostAlpha.lua"
-    },
-
-    {
-        Name = "Prison Life Premium",
-        Category = "Games",
-        Description = "Prison Life Premium",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/PrisonLife.lua"
     }
 }
 
