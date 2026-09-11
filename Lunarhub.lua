@@ -31,62 +31,6 @@ local Theme = {
 }
 
 local Games = {
-    {
-        Name = "Forsaken",
-        Category = "Games",
-        Description = "Forsaken scripts",
-        Link = "https://raw.githubusercontent.com/zxcursedsocute/Forsaken-Script/refs/heads/main/lua"
-    },
-
-    {
-        Name = "MM2",
-        Category = "Games",
-        Description = "Murder Mystery 2",
-        Link = "https://raw.githubusercontent.com/pruzgar242-rgb/Update/refs/heads/main/out.lua%20(17).txt"
-    },
-
-    {
-        Name = "1+ Speed Keyboard",
-        Category = "Games",
-        Description = "Speed Keyboard",
-        Link = "https://api.luarmor.net/files/v4/loaders/385c6d8937bfc4ef284dc8c27b50e1c5.lua"
-    },
-
-    {
-        Name = "Merge Nuke",
-        Category = "Games",
-        Description = "Merge Nuke",
-        Link = "https://raw.githubusercontent.com/gumanba/Scripts/main/MergeaNuke"
-    },
-
-    {
-        Name = "MorphUp",
-        Category = "Games",
-        Description = "MorphUp",
-        Link = "https://raw.githubusercontent.com/gumanba/Scripts/main/MorphUp"
-    },
-
-    {
-        Name = "1 Magic Evolution",
-        Category = "Games",
-        Description = "1 Magic Evolution",
-        Link = "https://raw.githubusercontent.com/gumanba/Scripts/main/1MagicEvolution"
-    },
-
-    {
-        Name = "99 Nights in Forest",
-        Category = "Games",
-        Description = "99 Nights in the Forest",
-        Link = "https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua"
-    },
-
-    {
-        Name = "Survive Zombie Arena",
-        Category = "Games",
-        Description = "Survive Zombie Arena",
-        Link = "https://raw.githubusercontent.com/caomod2077/Script/main/Foxname_SZA.lua"
-    },
-
     }
 }
 
