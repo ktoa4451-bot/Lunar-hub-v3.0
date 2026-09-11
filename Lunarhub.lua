@@ -36,13 +36,17 @@ local Theme = {
 
 local Games = {
 
-    -- Пример:
-    -- {
-    --     Name = "Forsaken",
-    --     Description = "Forsaken script",
-    --     Link = "ТВОЯ_РАБОЧАЯ_ССЫЛКА"
-    -- },
-
+    {
+        Name = "Steal the egg ",
+        Description = "Steal the egg",
+        Link = "https://raw.githubusercontent.com/PulseZax/Loader/refs/heads/main/.lua"
+    },
+    
+    {
+        Name = "Muscle Legends",
+        Description = "Muscle Legends",
+        Link = "https://raw.githubusercontent.com/2581235867/21/refs/heads/main/By%20Tokattk"
+    },
 }
 
 --------------------------------------------------
