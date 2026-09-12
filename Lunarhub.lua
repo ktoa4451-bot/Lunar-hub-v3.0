@@ -1,498 +1,1608 @@
---[[
-    🌙 LUNAR HUB v32.0
-    FINAL COMPACT UI
-]]
+--// 🌙 LUNAR HUB v32.0
+--// LINK GAME SYSTEM
+--// PART 1 / 3
+
+--==================================================
+-- SERVICES
+--==================================================
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
-local UIS = game:GetService("UserInputService")
+local UserInputService = game:GetService("UserInputService")
+local CoreGui = game:GetService("CoreGui")
 
-local Player = Players.LocalPlayer
-local VERSION = "32.0"
+local LocalPlayer = Players.LocalPlayer
 
 --==================================================
--- GUI PARENT
+-- CONFIG
 --==================================================
 
-local Parent
+local CONFIG = {
+    Name = "LunarHub",
+    Title = "LUNAR HUB",
+    Version = "v32.0",
 
-pcall(function()
-    if gethui then
-        Parent = gethui()
-    end
-end)
+    Width = 720,
+    Height = 510,
 
-Parent = Parent or game:GetService("CoreGui")
+    SidebarWidth = 165,
+    TopBarHeight = 76,
 
--- Удаляем старую копию
-pcall(function()
-    local old = Parent:FindFirstChild("LunarHub")
-    if old then
-        old:Destroy()
-    end
-end)
+    Corner = 20,
+}
 
 --==================================================
 -- THEME
 --==================================================
 
 local Theme = {
-    Background = Color3.fromRGB(12, 10, 27),
-    Header = Color3.fromRGB(15, 12, 32),
-    Sidebar = Color3.fromRGB(16, 13, 32),
+    Background = Color3.fromRGB(10, 8, 20),
+    Main = Color3.fromRGB(14, 11, 28),
 
-    Card = Color3.fromRGB(27, 23, 53),
-    CardHover = Color3.fromRGB(38, 30, 70),
+    Sidebar = Color3.fromRGB(17, 13, 34),
+    Card = Color3.fromRGB(22, 17, 43),
+    CardHover = Color3.fromRGB(31, 24, 58),
 
-    Purple = Color3.fromRGB(120, 45, 255),
-    PurpleDark = Color3.fromRGB(75, 28, 185),
+    Accent = Color3.fromRGB(167, 108, 255),
+    AccentDark = Color3.fromRGB(104, 65, 175),
 
-    Text = Color3.fromRGB(245, 242, 255),
-    Sub = Color3.fromRGB(150, 143, 180)
+    Text = Color3.fromRGB(245, 240, 255),
+    Sub = Color3.fromRGB(165, 155, 190),
+
+    Border = Color3.fromRGB(101, 67, 160),
 }
 
-local function Tween(obj, time, properties)
-    local info = TweenInfo.new(
-        time,
-        Enum.EasingStyle.Quint,
-        Enum.EasingDirection.Out
+--==================================================
+-- GAME DATA
+--==================================================
+
+local Games = {
+
+    {
+        Name = "Forsaken",
+        Description = "Forsaken script",
+        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/Forsaken.lua"
+    },
+
+    {
+        Name = "MM2",
+        Description = "Murder Mystery 2",
+        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/MM2.lua"
+    },
+
+    {
+        Name = "Rivals",
+        Description = "Rivals script",
+        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/Rivals.lua"
+    },
+
+    {
+        Name = "Slap Battles",
+        Description = "Slap Battles script",
+        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/SlapBattles.lua"
+    },
+
+    {
+        Name = "King Legacy",
+        Description = "King Legacy script",
+        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/KingLegacy.lua"
+    },
+
+    {
+        Name = "1+ Speed Keyboard",
+        Description = "Speed Keyboard script",
+        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/SpeedKeyboard.lua"
+    },
+
+    {
+        Name = "Merge Nuke",
+        Description = "Merge Nuke script",
+        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/MergeNuke.lua"
+    },
+
+    {
+        Name = "MorphUp",
+        Description = "MorphUp script",
+        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/MorphUp.lua"
+    },
+
+    {
+        Name = "1 Magic Evolution",
+        Description = "Magic Evolution script",
+        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/1MagicEvolution.lua"
+    },
+
+    {
+        Name = "99 Nights in Forest",
+        Description = "99 Nights in the Forest",
+        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/99Nights.lua"
+    },
+
+    {
+        Name = "Survive Zombie Arena",
+        Description = "Zombie Arena script",
+        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/SurviveZombieArena.lua"
+    },
+
+    {
+        Name = "Color or Die",
+        Description = "Color or Die script",
+        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/ColorOrDie.lua"
+    },
+
+    {
+        Name = "Rost Alpha Premium",
+        Description = "Rost Alpha Premium",
+        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/RostAlpha.lua"
+    },
+
+    {
+        Name = "Prison Life Premium",
+        Description = "Prison Life Premium",
+        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/PrisonLife.lua"
+    },
+
+}
+
+--==================================================
+-- REMOVE OLD GUI
+--==================================================
+
+pcall(function()
+    local old = CoreGui:FindFirstChild(CONFIG.Name)
+
+    if old then
+        old:Destroy()
+    end
+end)
+
+--==================================================
+-- HELPERS
+--==================================================
+
+local function Create(className, properties)
+    local object = Instance.new(className)
+
+    for property, value in pairs(properties or {}) do
+        object[property] = value
+    end
+
+    return object
+end
+
+local function Corner(parent, radius)
+    local corner = Instance.new("UICorner")
+
+    corner.CornerRadius = UDim.new(
+        0,
+        radius or CONFIG.Corner
     )
 
-    return TweenService:Create(obj, info, properties)
+    corner.Parent = parent
+
+    return corner
 end
 
-local function Corner(obj, radius)
-    local c = Instance.new("UICorner")
-    c.CornerRadius = UDim.new(0, radius)
-    c.Parent = obj
+local function Stroke(parent, color, thickness, transparency)
+    local stroke = Instance.new("UIStroke")
+
+    stroke.Color = color or Theme.Border
+    stroke.Thickness = thickness or 1
+    stroke.Transparency = transparency or 0
+
+    stroke.Parent = parent
+
+    return stroke
 end
 
-local function Stroke(obj, color, transparency, thickness)
-    local s = Instance.new("UIStroke")
-    s.Color = color
-    s.Transparency = transparency or 0
-    s.Thickness = thickness or 1
-    s.Parent = obj
+local function Tween(object, time, properties)
+    local tween = TweenService:Create(
+        object,
+        TweenInfo.new(
+            time or 0.15,
+            Enum.EasingStyle.Quad,
+            Enum.EasingDirection.Out
+        ),
+        properties
+    )
+
+    tween:Play()
+
+    return tween
 end
 
-local function MakeText(parent, text, size, position, font, color)
-    local t = Instance.new("TextLabel")
+local function MakeText(
+    parent,
+    text,
+    size,
+    position,
+    font,
+    color
+)
+    local label = Instance.new("TextLabel")
 
-    t.Parent = parent
-    t.BackgroundTransparency = 1
-    t.Text = text
-    t.TextSize = size
-    t.Font = font or Enum.Font.Gotham
-    t.TextColor3 = color or Theme.Text
-    t.Position = position
-    t.Size = UDim2.new(1, -20, 0, size + 8)
-    t.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = parent
+    label.BackgroundTransparency = 1
 
-    return t
+    label.Text = text
+    label.TextSize = size or 14
+    label.Font = font or Enum.Font.Gotham
+    label.TextColor3 = color or Theme.Text
+
+    label.Position = position or UDim2.new()
+    label.Size = UDim2.new(
+        1,
+        0,
+        0,
+        (size or 14) + 10
+    )
+
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.TextYAlignment = Enum.TextYAlignment.Center
+
+    return label
+end
+
+--==================================================
+-- GUI PARENT
+--==================================================
+
+local GuiParent
+
+pcall(function()
+    if gethui then
+        GuiParent = gethui()
+    end
+end)
+
+if not GuiParent then
+    GuiParent = CoreGui
 end
 
 --==================================================
 -- SCREEN GUI
 --==================================================
 
-local Gui = Instance.new("ScreenGui")
-Gui.Name = "LunarHub"
-Gui.ResetOnSpawn = false
-Gui.IgnoreGuiInset = true
-Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-Gui.Parent = Parent
+local ScreenGui = Create("ScreenGui", {
+    Name = CONFIG.Name,
+
+    Parent = GuiParent,
+
+    ResetOnSpawn = false,
+    IgnoreGuiInset = true,
+
+    ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+})
 
 --==================================================
--- MAIN
+-- MAIN WINDOW
 --==================================================
 
-local Main = Instance.new("Frame")
+local Main = Create("Frame", {
+    Name = "Main",
 
-Main.Parent = Gui
-Main.AnchorPoint = Vector2.new(0.5, 0.5)
-Main.Position = UDim2.new(0.5, 0, 0.5, 30)
+    Parent = ScreenGui,
 
--- Меньше ширина, высота остаётся большой
-Main.Size = UDim2.new(0, 720, 0, 500)
+    AnchorPoint = Vector2.new(0.5, 0.5),
 
-Main.BackgroundColor3 = Theme.Background
-Main.BackgroundTransparency = 0.03
-Main.BorderSizePixel = 0
-Main.ClipsDescendants = true
+    Position = UDim2.new(
+        0.5,
+        0,
+        0.5,
+        0
+    ),
 
-Corner(Main, 24)
-Stroke(Main, Theme.Purple, 0.18, 2)
+    Size = UDim2.new(
+        0,
+        CONFIG.Width,
+        0,
+        CONFIG.Height
+    ),
+
+    BackgroundColor3 = Theme.Background,
+
+    BorderSizePixel = 0,
+
+    ZIndex = 2,
+})
+
+Corner(Main, CONFIG.Corner)
+
+local MainStroke = Stroke(
+    Main,
+    Theme.Border,
+    1.5,
+    0.15
+)
 
 --==================================================
--- HEADER
+-- GLOW
 --==================================================
 
-local Header = Instance.new("Frame")
+local Glow = Create("ImageLabel", {
+    Name = "Glow",
 
-Header.Parent = Main
-Header.Size = UDim2.new(1, 0, 0, 82)
-Header.BackgroundColor3 = Theme.Header
-Header.BorderSizePixel = 0
+    Parent = Main,
 
-Corner(Header, 24)
+    BackgroundTransparency = 1,
 
--- Луна
-local Moon = MakeText(
-    Header,
+    AnchorPoint = Vector2.new(0.5, 0.5),
+
+    Position = UDim2.new(
+        0.5,
+        0,
+        0.5,
+        0
+    ),
+
+    Size = UDim2.new(
+        1,
+        45,
+        1,
+        45
+    ),
+
+    Image = "rbxassetid://5028857084",
+
+    ImageColor3 = Theme.Accent,
+
+    ImageTransparency = 0.9,
+
+    ScaleType = Enum.ScaleType.Slice,
+
+    SliceCenter = Rect.new(
+        24,
+        24,
+        276,
+        276
+    ),
+
+    ZIndex = 1,
+})
+
+--==================================================
+-- TOP BAR
+--==================================================
+
+local TopBar = Create("Frame", {
+    Name = "TopBar",
+
+    Parent = Main,
+
+    Position = UDim2.new(
+        0,
+        0,
+        0,
+        0
+    ),
+
+    Size = UDim2.new(
+        1,
+        0,
+        0,
+        CONFIG.TopBarHeight
+    ),
+
+    BackgroundColor3 = Theme.Main,
+
+    BorderSizePixel = 0,
+
+    ZIndex = 5,
+})
+
+Corner(TopBar, CONFIG.Corner)
+
+--==================================================
+-- LOGO
+--==================================================
+
+local Logo = MakeText(
+    TopBar,
     "🌙",
-    31,
-    UDim2.new(0, 20, 0, 16),
-    Enum.Font.GothamBold
+    27,
+    UDim2.new(0, 18, 0, 8),
+    Enum.Font.GothamBold,
+    Theme.Text
 )
 
-Moon.Size = UDim2.new(0, 42, 0, 42)
-Moon.TextXAlignment = Enum.TextXAlignment.Center
+Logo.Size = UDim2.new(
+    0,
+    42,
+    0,
+    45
+)
 
--- Title
+Logo.TextXAlignment =
+    Enum.TextXAlignment.Center
+
+--==================================================
+-- TITLE
+--==================================================
+
 local Title = MakeText(
-    Header,
-    "LUNAR HUB",
-    22,
-    UDim2.new(0, 65, 0, 12),
-    Enum.Font.GothamBold
+    TopBar,
+    CONFIG.Title,
+    20,
+    UDim2.new(0, 62, 0, 7),
+    Enum.Font.GothamBold,
+    Theme.Text
 )
 
-Title.Size = UDim2.new(0, 150, 0, 30)
-
--- Version
-local Version = MakeText(
-    Header,
-    "v" .. VERSION,
-    12,
-    UDim2.new(0, 66, 0, 42),
-    Enum.Font.Gotham,
-    Theme.Sub
+Title.Size = UDim2.new(
+    0,
+    150,
+    0,
+    32
 )
 
 --==================================================
--- HEADER SEARCH
+-- VERSION
 --==================================================
 
-local Search = Instance.new("TextBox")
+local VersionText = MakeText(
+    TopBar,
+    CONFIG.Version,
+    11,
+    UDim2.new(0, 63, 0, 38),
+    Enum.Font.GothamMedium,
+    Theme.Accent
+)
 
-Search.Parent = Header
-Search.Position = UDim2.new(0, 220, 0, 14)
-Search.Size = UDim2.new(1, -365, 0, 54)
+VersionText.Size = UDim2.new(
+    0,
+    100,
+    0,
+    20
+)
 
-Search.BackgroundColor3 = Theme.Card
-Search.BorderSizePixel = 0
+--==================================================
+-- SEARCH
+--==================================================
 
-Search.Text = ""
-Search.PlaceholderText = "🔍  Search games..."
-Search.PlaceholderColor3 = Theme.Sub
+local SearchBox = Create("Frame", {
+    Name = "SearchBox",
 
-Search.TextColor3 = Theme.Text
-Search.TextSize = 14
-Search.Font = Enum.Font.Gotham
+    Parent = TopBar,
 
-Search.ClearTextOnFocus = false
+    Position = UDim2.new(
+        0,
+        250,
+        0,
+        19
+    ),
 
-Corner(Search, 17)
+    Size = UDim2.new(
+        0,
+        250,
+        0,
+        38
+    ),
+
+    BackgroundColor3 = Theme.Card,
+
+    BorderSizePixel = 0,
+
+    ZIndex = 10,
+})
+
+Corner(SearchBox, 12)
+
+Stroke(
+    SearchBox,
+    Theme.Border,
+    1,
+    0.45
+)
+
+local SearchIcon = MakeText(
+    SearchBox,
+    "🔍",
+    15,
+    UDim2.new(0, 10, 0, 0),
+    Enum.Font.Gotham
+)
+
+SearchIcon.Size = UDim2.new(
+    0,
+    28,
+    1,
+    0
+)
+
+SearchIcon.TextXAlignment =
+    Enum.TextXAlignment.Center
+
+local SearchInput = Create("TextBox", {
+    Name = "SearchInput",
+
+    Parent = SearchBox,
+
+    Position = UDim2.new(
+        0,
+        40,
+        0,
+        0
+    ),
+
+    Size = UDim2.new(
+        1,
+        -48,
+        1,
+        0
+    ),
+
+    BackgroundTransparency = 1,
+
+    Text = "",
+
+    PlaceholderText = "Search games...",
+
+    PlaceholderColor3 = Theme.Sub,
+
+    TextColor3 = Theme.Text,
+
+    TextSize = 13,
+
+    Font = Enum.Font.Gotham,
+
+    ClearTextOnFocus = false,
+
+    TextXAlignment = Enum.TextXAlignment.Left,
+
+    ZIndex = 11,
+})
 
 --==================================================
 -- MINIMIZE
 --==================================================
 
-local Minimize = Instance.new("TextButton")
+local MinimizeButton = Create("TextButton", {
+    Name = "Minimize",
 
-Minimize.Parent = Header
-Minimize.Position = UDim2.new(1, -112, 0, 19)
-Minimize.Size = UDim2.new(0, 43, 0, 43)
+    Parent = TopBar,
 
-Minimize.BackgroundColor3 = Theme.Card
-Minimize.Text = "−"
-Minimize.TextSize = 23
-Minimize.Font = Enum.Font.GothamBold
-Minimize.TextColor3 = Theme.Text
-Minimize.BorderSizePixel = 0
-Minimize.AutoButtonColor = false
+    Position = UDim2.new(
+        1,
+        -78,
+        0,
+        18
+    ),
 
-Corner(Minimize, 14)
+    Size = UDim2.new(
+        0,
+        30,
+        0,
+        30
+    ),
+
+    BackgroundColor3 = Theme.Card,
+
+    Text = "−",
+
+    TextColor3 = Theme.Text,
+
+    TextSize = 19,
+
+    Font = Enum.Font.GothamBold,
+
+    AutoButtonColor = false,
+
+    ZIndex = 20,
+})
+
+Corner(MinimizeButton, 9)
 
 --==================================================
 -- CLOSE
 --==================================================
 
-local Close = Instance.new("TextButton")
+local CloseButton = Create("TextButton", {
+    Name = "Close",
 
-Close.Parent = Header
-Close.Position = UDim2.new(1, -61, 0, 19)
-Close.Size = UDim2.new(0, 43, 0, 43)
+    Parent = TopBar,
 
-Close.BackgroundColor3 = Theme.Card
-Close.Text = "×"
-Close.TextSize = 23
-Close.Font = Enum.Font.GothamBold
-Close.TextColor3 = Theme.Text
-Close.BorderSizePixel = 0
-Close.AutoButtonColor = false
+    Position = UDim2.new(
+        1,
+        -42,
+        0,
+        18
+    ),
 
-Corner(Close, 14)
+    Size = UDim2.new(
+        0,
+        30,
+        0,
+        30
+    ),
+
+    BackgroundColor3 = Theme.Card,
+
+    Text = "×",
+
+    TextColor3 = Theme.Text,
+
+    TextSize = 19,
+
+    Font = Enum.Font.GothamBold,
+
+    AutoButtonColor = false,
+
+    ZIndex = 20,
+})
+
+Corner(CloseButton, 9)
 
 --==================================================
 -- SIDEBAR
 --==================================================
 
-local Sidebar = Instance.new("Frame")
+local Sidebar = Create("Frame", {
+    Name = "Sidebar",
 
-Sidebar.Parent = Main
-Sidebar.Position = UDim2.new(0, 0, 0, 82)
-Sidebar.Size = UDim2.new(0, 185, 1, -82)
+    Parent = Main,
 
-Sidebar.BackgroundColor3 = Theme.Sidebar
-Sidebar.BorderSizePixel = 0
+    Position = UDim2.new(
+        0,
+        0,
+        0,
+        CONFIG.TopBarHeight
+    ),
 
-Corner(Sidebar, 20)
+    Size = UDim2.new(
+        0,
+        CONFIG.SidebarWidth,
+        1,
+        -CONFIG.TopBarHeight
+    ),
 
---==================================================
--- GAMES CATEGORY
---==================================================
+    BackgroundColor3 = Theme.Sidebar,
 
-local GamesButton = Instance.new("TextButton")
+    BorderSizePixel = 0,
 
-GamesButton.Parent = Sidebar
-GamesButton.Position = UDim2.new(0, 14, 0, 25)
-GamesButton.Size = UDim2.new(1, -28, 0, 58)
-
-GamesButton.BackgroundColor3 = Theme.PurpleDark
-GamesButton.Text = "🎮  Games"
-GamesButton.TextSize = 16
-GamesButton.Font = Enum.Font.GothamBold
-GamesButton.TextColor3 = Theme.Text
-
-GamesButton.BorderSizePixel = 0
-GamesButton.AutoButtonColor = false
-
-Corner(GamesButton, 17)
+    ZIndex = 4,
+})
 
 --==================================================
--- UPDATES CATEGORY
+-- CATEGORY TITLE
 --==================================================
 
-local UpdatesButton = Instance.new("TextButton")
+local CategoryTitle = MakeText(
+    Sidebar,
+    "CATEGORIES",
+    10,
+    UDim2.new(0, 18, 0, 18),
+    Enum.Font.GothamBold,
+    Theme.Sub
+)
 
-UpdatesButton.Parent = Sidebar
-UpdatesButton.Position = UDim2.new(0, 14, 0, 94)
-UpdatesButton.Size = UDim2.new(1, -28, 0, 58)
+CategoryTitle.Size = UDim2.new(
+    1,
+    -36,
+    0,
+    25
+)
 
-UpdatesButton.BackgroundColor3 = Theme.Sidebar
-UpdatesButton.Text = "🔄  Updates"
-UpdatesButton.TextSize = 16
-UpdatesButton.Font = Enum.Font.Gotham
-UpdatesButton.TextColor3 = Theme.Sub
+--==================================================
+-- GAMES BUTTON
+--==================================================
 
-UpdatesButton.BorderSizePixel = 0
-UpdatesButton.AutoButtonColor = false
+local GamesButton = Create("TextButton", {
+    Name = "GamesButton",
 
-Corner(UpdatesButton, 17)
+    Parent = Sidebar,
+
+    Position = UDim2.new(
+        0,
+        10,
+        0,
+        55
+    ),
+
+    Size = UDim2.new(
+        1,
+        -20,
+        0,
+        43
+    ),
+
+    BackgroundColor3 = Theme.AccentDark,
+
+    Text = "🎮  Games",
+
+    TextColor3 = Theme.Text,
+
+    TextSize = 13,
+
+    Font = Enum.Font.GothamBold,
+
+    TextXAlignment = Enum.TextXAlignment.Left,
+
+    AutoButtonColor = false,
+
+    ZIndex = 10,
+})
+
+Corner(GamesButton, 11)
+
+local GamesPadding = Instance.new("UIPadding")
+GamesPadding.Parent = GamesButton
+GamesPadding.PaddingLeft = UDim.new(0, 13)
+
+--==================================================
+-- UPDATES BUTTON
+--==================================================
+
+local UpdatesButton = Create("TextButton", {
+    Name = "UpdatesButton",
+
+    Parent = Sidebar,
+
+    Position = UDim2.new(
+        0,
+        10,
+        0,
+        105
+    ),
+
+    Size = UDim2.new(
+        1,
+        -20,
+        0,
+        43
+    ),
+
+    BackgroundColor3 = Theme.Card,
+
+    Text = "🔄  Updates",
+
+    TextColor3 = Theme.Sub,
+
+    TextSize = 13,
+
+    Font = Enum.Font.GothamMedium,
+
+    TextXAlignment = Enum.TextXAlignment.Left,
+
+    AutoButtonColor = false,
+
+    ZIndex = 10,
+})
+
+Corner(UpdatesButton, 11)
+
+local UpdatesPadding = Instance.new("UIPadding")
+UpdatesPadding.Parent = UpdatesButton
+UpdatesPadding.PaddingLeft = UDim.new(0, 13)
 
 --==================================================
 -- CONTENT
 --==================================================
 
-local Content = Instance.new("Frame")
+local Content = Create("Frame", {
+    Name = "Content",
 
-Content.Parent = Main
-Content.Position = UDim2.new(0, 185, 0, 82)
-Content.Size = UDim2.new(1, -185, 1, -82)
+    Parent = Main,
 
-Content.BackgroundTransparency = 1
+    Position = UDim2.new(
+        0,
+        CONFIG.SidebarWidth,
+        0,
+        CONFIG.TopBarHeight
+    ),
+
+    Size = UDim2.new(
+        1,
+        -CONFIG.SidebarWidth,
+        1,
+        -CONFIG.TopBarHeight
+    ),
+
+    BackgroundColor3 = Theme.Main,
+
+    BorderSizePixel = 0,
+
+    ZIndex = 3,
+})
+
+--==================================================
+-- GAME PAGE
+--==================================================
+
+local GamePage = Create("Frame", {
+    Name = "GamePage",
+
+    Parent = Content,
+
+    Position = UDim2.new(
+        0,
+        14,
+        0,
+        14
+    ),
+
+    Size = UDim2.new(
+        1,
+        -28,
+        1,
+        -24
+    ),
+
+    BackgroundColor3 = Theme.Card,
+
+    BorderSizePixel = 0,
+
+    Visible = true,
+
+    ZIndex = 4,
+})
+
+Corner(GamePage, 18)
+
+--==================================================
+-- GAME TITLE
+--==================================================
+
+local GameTitle = MakeText(
+    GamePage,
+    "🎮  Games",
+    20,
+    UDim2.new(0, 20, 0, 13),
+    Enum.Font.GothamBold,
+    Theme.Text
+)
+
+GameTitle.Size = UDim2.new(
+    1,
+    -40,
+    0,
+    35
+)
+
+--==================================================
+-- GAME SCROLL
+--==================================================
+
+local GameScroll = Create("ScrollingFrame", {
+    Name = "GameScroll",
+
+    Parent = GamePage,
+
+    Position = UDim2.new(
+        0,
+        15,
+        0,
+        55
+    ),
+
+    Size = UDim2.new(
+        1,
+        -30,
+        1,
+        -65
+    ),
+
+    BackgroundTransparency = 1,
+
+    BorderSizePixel = 0,
+
+    ScrollBarThickness = 3,
+
+    ScrollBarImageColor3 = Theme.Accent,
+
+    CanvasSize = UDim2.new(
+        0,
+        0,
+        0,
+        0
+    ),
+
+    AutomaticCanvasSize = Enum.AutomaticSize.Y,
+
+    ScrollingDirection = Enum.ScrollingDirection.Y,
+
+    ZIndex = 5,
+})
 
 --==================================================
 -- GAME LIST
 --==================================================
 
-local GameList = Instance.new("ScrollingFrame")
+local GameList = Create("UIListLayout", {
+    Parent = GameScroll,
 
-GameList.Parent = Content
-GameList.Position = UDim2.new(0, 18, 0, 15)
-GameList.Size = UDim2.new(1, -36, 1, -25)
+    Padding = UDim.new(
+        0,
+        9
+    ),
 
-GameList.BackgroundTransparency = 1
-GameList.BorderSizePixel = 0
+    SortOrder = Enum.SortOrder.LayoutOrder,
+})
 
-GameList.ScrollBarThickness = 2
-GameList.ScrollBarImageColor3 = Theme.Purple
-
-GameList.AutomaticCanvasSize = Enum.AutomaticSize.Y
-GameList.CanvasSize = UDim2.new()
-
-local Layout = Instance.new("UIListLayout")
-
-Layout.Parent = GameList
-Layout.Padding = UDim.new(0, 10)
-
-Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+GameList.HorizontalAlignment =
+    Enum.HorizontalAlignment.Center
 
 --==================================================
--- GAMES
+-- END PART 1 / 3
 --==================================================
 
-local GameData = {
-    {"Forsaken", "Forsaken scripts"},
-    {"MM2", "Murder Mystery 2"},
-    {"Rivals", "Rivals scripts"},
-    {"Slap Battles", "Slap Battles"},
-    {"King Legacy", "King Legacy"}
-}
+--==================================================
+-- 🌙 LUNAR HUB v32.0
+-- PART 2 / 3
+--==================================================
 
-local Cards = {}
+--==================================================
+-- GAME CARD CREATOR
+--==================================================
 
-local function CreateGame(name, description)
+local GameCards = {}
 
-    local Card = Instance.new("TextButton")
+local function CreateGameCard(gameData, index)
 
-    Card.Parent = GameList
-    Card.Size = UDim2.new(1, 0, 0, 80)
+    local Card = Create("TextButton", {
+        Name = "Game_" .. tostring(index),
 
-    Card.BackgroundColor3 = Theme.Card
-    Card.BorderSizePixel = 0
+        Parent = GameScroll,
 
-    Card.Text = ""
-    Card.AutoButtonColor = false
+        Size = UDim2.new(
+            1,
+            -5,
+            0,
+            64
+        ),
 
-    Corner(Card, 19)
+        BackgroundColor3 = Theme.Main,
 
-    -- Icon
-    local Icon = Instance.new("Frame")
+        BorderSizePixel = 0,
 
-    Icon.Parent = Card
-    Icon.Position = UDim2.new(0, 12, 0, 11)
-    Icon.Size = UDim2.new(0, 58, 0, 58)
+        Text = "",
 
-    Icon.BackgroundColor3 = Theme.PurpleDark
-    Icon.BorderSizePixel = 0
+        AutoButtonColor = false,
 
-    Corner(Icon, 16)
+        LayoutOrder = index,
 
-    local IconText = MakeText(
-        Icon,
-        "🌙",
-        25,
-        UDim2.new(0, 0, 0, 9),
-        Enum.Font.GothamBold
+        ZIndex = 6,
+    })
+
+    Corner(Card, 14)
+
+    local CardStroke = Stroke(
+        Card,
+        Theme.Border,
+        1,
+        0.65
     )
 
-    IconText.Size = UDim2.new(1, 0, 0, 38)
-    IconText.TextXAlignment = Enum.TextXAlignment.Center
+    --==================================================
+    -- MOON
+    --==================================================
 
-    -- Name
+    local Moon = MakeText(
+        Card,
+        "🌙",
+        21,
+        UDim2.new(0, 10, 0, 8),
+        Enum.Font.GothamBold,
+        Theme.Text
+    )
+
+    Moon.Size = UDim2.new(
+        0,
+        40,
+        0,
+        45
+    )
+
+    Moon.TextXAlignment =
+        Enum.TextXAlignment.Center
+
+    --==================================================
+    -- NAME
+    --==================================================
+
     local Name = MakeText(
         Card,
-        name,
-        15,
-        UDim2.new(0, 84, 0, 13),
-        Enum.Font.GothamBold
+        gameData.Name or "Unknown Game",
+        14,
+        UDim2.new(0, 58, 0, 7),
+        Enum.Font.GothamBold,
+        Theme.Text
     )
 
-    -- Description
+    Name.Size = UDim2.new(
+        1,
+        -115,
+        0,
+        24
+    )
+
+    Name.TextTruncate =
+        Enum.TextTruncate.AtEnd
+
+    --==================================================
+    -- DESCRIPTION
+    --==================================================
+
     local Description = MakeText(
         Card,
-        description,
-        12,
-        UDim2.new(0, 84, 0, 40),
+        gameData.Description or "No description",
+        11,
+        UDim2.new(0, 58, 0, 32),
         Enum.Font.Gotham,
         Theme.Sub
     )
 
-    -- Arrow
+    Description.Size = UDim2.new(
+        1,
+        -115,
+        0,
+        20
+    )
+
+    Description.TextTruncate =
+        Enum.TextTruncate.AtEnd
+
+    --==================================================
+    -- ARROW
+    --==================================================
+
     local Arrow = MakeText(
         Card,
         "›",
-        28,
-        UDim2.new(1, -43, 0, 21),
-        Enum.Font.GothamBold,
+        27,
+        UDim2.new(
+            1,
+            -47,
+            0,
+            8
+        ),
+        Enum.Font.GothamMedium,
         Theme.Sub
     )
 
-    Arrow.Size = UDim2.new(0, 30, 0, 35)
-    Arrow.TextXAlignment = Enum.TextXAlignment.Center
+    Arrow.Size = UDim2.new(
+        0,
+        35,
+        0,
+        45
+    )
 
-    -- Hover
+    Arrow.TextXAlignment =
+        Enum.TextXAlignment.Center
+
+    --==================================================
+    -- HOVER ON
+    --==================================================
+
     Card.MouseEnter:Connect(function()
 
-        Tween(Card, 0.18, {
-            BackgroundColor3 = Theme.CardHover
-        }):Play()
+        Tween(
+            Card,
+            0.15,
+            {
+                BackgroundColor3 =
+                    Theme.CardHover
+            }
+        )
 
-        Tween(Icon, 0.18, {
-            Size = UDim2.new(0, 62, 0, 62)
-        }):Play()
+        Tween(
+            CardStroke,
+            0.15,
+            {
+                Transparency = 0.15
+            }
+        )
 
+        Tween(
+            Arrow,
+            0.15,
+            {
+                TextColor3 =
+                    Theme.Accent
+            }
+        )
+
+        Tween(
+            Moon,
+            0.15,
+            {
+                TextColor3 =
+                    Theme.Accent
+            }
+        )
     end)
+
+    --==================================================
+    -- HOVER OFF
+    --==================================================
 
     Card.MouseLeave:Connect(function()
 
-        Tween(Card, 0.18, {
-            BackgroundColor3 = Theme.Card
-        }):Play()
+        Tween(
+            Card,
+            0.15,
+            {
+                BackgroundColor3 =
+                    Theme.Main
+            }
+        )
 
-        Tween(Icon, 0.18, {
-            Size = UDim2.new(0, 58, 0, 58)
-        }):Play()
+        Tween(
+            CardStroke,
+            0.15,
+            {
+                Transparency = 0.65
+            }
+        )
 
+        Tween(
+            Arrow,
+            0.15,
+            {
+                TextColor3 =
+                    Theme.Sub
+            }
+        )
+
+        Tween(
+            Moon,
+            0.15,
+            {
+                TextColor3 =
+                    Theme.Text
+            }
+        )
     end)
 
-    -- Click animation
+    --==================================================
+    -- CLICK EFFECT
+    --==================================================
+
+    Card.MouseButton1Down:Connect(function()
+
+        Tween(
+            Card,
+            0.08,
+            {
+                BackgroundColor3 =
+                    Theme.AccentDark
+            }
+        )
+
+        Tween(
+            Arrow,
+            0.08,
+            {
+                TextColor3 =
+                    Theme.Text
+            }
+        )
+    end)
+
+    Card.MouseButton1Up:Connect(function()
+
+        Tween(
+            Card,
+            0.12,
+            {
+                BackgroundColor3 =
+                    Theme.CardHover
+            }
+        )
+    end)
+
+    --==================================================
+    -- SAVE CARD
+    --==================================================
+
+    GameCards[index] = {
+        Frame = Card,
+        Data = gameData,
+        Name = Name,
+        Description = Description,
+    }
+
+    return Card
+end
+
+--==================================================
+-- CREATE CARDS
+--==================================================
+
+for index, gameData in ipairs(Games) do
+    CreateGameCard(gameData, index)
+end
+
+--==================================================
+-- EXECUTE GAME
+--==================================================
+
+local function ExecuteGame(gameData)
+
+    if not gameData then
+        return
+    end
+
+    if not gameData.Link or gameData.Link == "" then
+
+        warn(
+            "Lunar Hub: No Link for " ..
+            tostring(gameData.Name)
+        )
+
+        return
+    end
+
+    task.spawn(function()
+
+        local success, result = pcall(function()
+
+            local source =
+                game:HttpGet(gameData.Link)
+
+            if not source or source == "" then
+
+                error(
+                    "Empty script received from link"
+                )
+
+            end
+
+            local loaded =
+                loadstring(source)
+
+            if not loaded then
+
+                error(
+                    "loadstring failed"
+                )
+
+            end
+
+            return loaded()
+
+        end)
+
+        if not success then
+
+            warn(
+                "Lunar Hub [" ..
+                tostring(gameData.Name) ..
+                "]: " ..
+                tostring(result)
+            )
+
+        end
+
+    end)
+end
+
+--==================================================
+-- CONNECT GAME BUTTONS
+--==================================================
+
+for index, cardData in pairs(GameCards) do
+
+    local Card = cardData.Frame
+    local gameData = cardData.Data
+
     Card.MouseButton1Click:Connect(function()
 
-        Tween(Card, 0.08, {
-            Size = UDim2.new(0.97, 0, 0, 77)
-        }):Play()
-
-        task.wait(0.08)
-
-        Tween(Card, 0.15, {
-            Size = UDim2.new(1, 0, 0, 80)
-        }):Play()
-
-        print("🌙 Lunar Hub:", name)
+        ExecuteGame(gameData)
 
     end)
 
-    table.insert(Cards, {
-        Card = Card,
-        Name = name
-    })
 end
 
-for _, data in ipairs(GameData) do
-    CreateGame(data[1], data[2])
+--==================================================
+-- SEARCH FUNCTION
+--==================================================
+
+local function SearchGames(text)
+
+    text = tostring(text or "")
+    text = string.lower(text)
+
+    for _, cardData in pairs(GameCards) do
+
+        local gameData = cardData.Data
+
+        local gameName =
+            string.lower(
+                tostring(gameData.Name or "")
+            )
+
+        local description =
+            string.lower(
+                tostring(gameData.Description or "")
+            )
+
+        local found = false
+
+        if text == "" then
+
+            found = true
+
+        elseif string.find(
+            gameName,
+            text,
+            1,
+            true
+        ) then
+
+            found = true
+
+        elseif string.find(
+            description,
+            text,
+            1,
+            true
+        ) then
+
+            found = true
+
+        end
+
+        cardData.Frame.Visible = found
+    end
+
 end
+
+--==================================================
+-- SEARCH CHANGED
+--==================================================
+
+SearchInput:GetPropertyChangedSignal(
+    "Text"
+):Connect(function()
+
+    SearchGames(
+        SearchInput.Text
+    )
+
+end)
+
+--==================================================
+-- SEARCH FOCUS
+--==================================================
+
+SearchInput.Focused:Connect(function()
+
+    Tween(
+        SearchBox,
+        0.15,
+        {
+            BackgroundColor3 =
+                Theme.CardHover
+        }
+    )
+
+end)
+
+SearchInput.FocusLost:Connect(function()
+
+    Tween(
+        SearchBox,
+        0.15,
+        {
+            BackgroundColor3 =
+                Theme.Card
+        }
+    )
+
+end)
+
+--==================================================
+-- PAGE STATE
+--==================================================
+
+local CurrentPage = "Games"
+
+local function SetPage(page)
+
+    CurrentPage = page
+
+    if page == "Games" then
+
+        GamePage.Visible = true
+
+        if UpdatePage then
+            UpdatePage.Visible = false
+        end
+
+        GamesButton.BackgroundColor3 =
+            Theme.AccentDark
+
+        GamesButton.TextColor3 =
+            Theme.Text
+
+        UpdatesButton.BackgroundColor3 =
+            Theme.Card
+
+        UpdatesButton.TextColor3 =
+            Theme.Sub
+
+    elseif page == "Updates" then
+
+        GamePage.Visible = false
+
+        if UpdatePage then
+            UpdatePage.Visible = true
+        end
+
+        GamesButton.BackgroundColor3 =
+            Theme.Card
+
+        GamesButton.TextColor3 =
+            Theme.Sub
+
+        UpdatesButton.BackgroundColor3 =
+            Theme.AccentDark
+
+        UpdatesButton.TextColor3 =
+            Theme.Text
+
+    end
+
+end
+
+--==================================================
+-- SIDEBAR HOVER
+--==================================================
+
+GamesButton.MouseEnter:Connect(function()
+
+    if CurrentPage ~= "Games" then
+
+        Tween(
+            GamesButton,
+            0.15,
+            {
+                BackgroundColor3 =
+                    Theme.CardHover
+            }
+        )
+
+    end
+
+end)
+
+GamesButton.MouseLeave:Connect(function()
+
+    if CurrentPage ~= "Games" then
+
+        Tween(
+            GamesButton,
+            0.15,
+            {
+                BackgroundColor3 =
+                    Theme.Card
+            }
+        )
+
+    end
+
+end)
+
+UpdatesButton.MouseEnter:Connect(function()
+
+    if CurrentPage ~= "Updates" then
+
+        Tween(
+            UpdatesButton,
+            0.15,
+            {
+                BackgroundColor3 =
+                    Theme.CardHover
+            }
+        )
+
+    end
+
+end)
+
+UpdatesButton.MouseLeave:Connect(function()
+
+    if CurrentPage ~= "Updates" then
+
+        Tween(
+            UpdatesButton,
+            0.15,
+            {
+                BackgroundColor3 =
+                    Theme.Card
+            }
+        )
+
+    end
+
+end)
+
+--==================================================
+-- BUTTON CLICKS
+--==================================================
+
+GamesButton.MouseButton1Click:Connect(function()
+
+    SetPage("Games")
+
+end)
+
+UpdatesButton.MouseButton1Click:Connect(function()
+
+    SetPage("Updates")
+
+end)
+
+--==================================================
+-- END PART 2 / 3
+--==================================================
+
+--==================================================
+-- 🌙 LUNAR HUB v32.0
+-- PART 3 / 3
+--==================================================
 
 --==================================================
 -- UPDATE PAGE
 --==================================================
 
-local UpdatePage = Instance.new("Frame")
+local UpdatePage = Create("Frame", {
+    Name = "UpdatePage",
 
-UpdatePage.Parent = Content
-UpdatePage.Position = UDim2.new(0, 18, 0, 15)
-UpdatePage.Size = UDim2.new(1, -36, 1, -25)
+    Parent = Content,
 
-UpdatePage.BackgroundColor3 = Theme.Card
-UpdatePage.BorderSizePixel = 0
-UpdatePage.Visible = false
+    Position = UDim2.new(
+        0,
+        14,
+        0,
+        14
+    ),
 
-Corner(UpdatePage, 20)
+    Size = UDim2.new(
+        1,
+        -28,
+        1,
+        -24
+    ),
 
--- Заголовок НЕ двигаем
-MakeText(
+    BackgroundColor3 = Theme.Card,
+
+    BorderSizePixel = 0,
+
+    Visible = false,
+
+    ZIndex = 4,
+})
+
+Corner(UpdatePage, 18)
+
+--==================================================
+-- UPDATE TITLE
+--==================================================
+
+local UpdateTitle = MakeText(
     UpdatePage,
     "🔄  Lunar Updates",
     21,
     UDim2.new(0, 22, 0, 22),
-    Enum.Font.GothamBold
+    Enum.Font.GothamBold,
+    Theme.Text
 )
 
--- Описание обновления опущено ниже
-MakeText(
+UpdateTitle.Size = UDim2.new(
+    1,
+    -44,
+    0,
+    35
+)
+
+--==================================================
+-- UPDATE DESCRIPTION
+--==================================================
+
+local UpdateDescription = MakeText(
     UpdatePage,
+
     "🌙 Lunar Hub v32.0\n\n" ..
     "• New compact interface\n" ..
     "• Rounded corners everywhere\n" ..
@@ -500,259 +1610,534 @@ MakeText(
     "• Improved search\n" ..
     "• Fixed duplicate categories\n" ..
     "• Improved mobile layout",
+
     13,
-    UDim2.new(0, 22, 0, 105),
+
+    UDim2.new(
+        0,
+        22,
+        0,
+        95
+    ),
+
     Enum.Font.Gotham,
+
     Theme.Sub
 )
 
+UpdateDescription.Size = UDim2.new(
+    1,
+    -44,
+    0,
+    180
+)
+
+UpdateDescription.TextYAlignment =
+    Enum.TextYAlignment.Top
+
+UpdateDescription.TextWrapped = true
+
 --==================================================
--- SEARCH FILTER
+-- PAGE SWITCH ANIMATION
 --==================================================
 
-Search:GetPropertyChangedSignal("Text"):Connect(function()
+local function AnimatePage(page)
 
-    local query = Search.Text:lower()
+    if not page then
+        return
+    end
 
-    for _, item in ipairs(Cards) do
+    page.Position = UDim2.new(
+        0,
+        28,
+        0,
+        14
+    )
 
-        local name = item.Name:lower()
+    page.BackgroundTransparency = 1
 
-        if query == "" then
-            item.Card.Visible = true
-        else
-            item.Card.Visible = name:find(query, 1, true) ~= nil
-        end
+    Tween(
+        page,
+        0.2,
+        {
+            Position = UDim2.new(
+                0,
+                14,
+                0,
+                14
+            ),
+
+            BackgroundTransparency = 0
+        }
+    )
+
+end
+
+--==================================================
+-- OVERRIDE PAGE SWITCH
+--==================================================
+
+local function SwitchPage(page)
+
+    CurrentPage = page
+
+    if page == "Games" then
+
+        UpdatePage.Visible = false
+
+        GamePage.Visible = true
+
+        AnimatePage(GamePage)
+
+        Tween(
+            GamesButton,
+            0.15,
+            {
+                BackgroundColor3 =
+                    Theme.AccentDark,
+
+                TextColor3 =
+                    Theme.Text
+            }
+        )
+
+        Tween(
+            UpdatesButton,
+            0.15,
+            {
+                BackgroundColor3 =
+                    Theme.Card,
+
+                TextColor3 =
+                    Theme.Sub
+            }
+        )
+
+    elseif page == "Updates" then
+
+        GamePage.Visible = false
+
+        UpdatePage.Visible = true
+
+        AnimatePage(UpdatePage)
+
+        Tween(
+            GamesButton,
+            0.15,
+            {
+                BackgroundColor3 =
+                    Theme.Card,
+
+                TextColor3 =
+                    Theme.Sub
+            }
+        )
+
+        Tween(
+            UpdatesButton,
+            0.15,
+            {
+                BackgroundColor3 =
+                    Theme.AccentDark,
+
+                TextColor3 =
+                    Theme.Text
+            }
+        )
 
     end
-end)
-
---==================================================
--- CATEGORY ANIMATION
---==================================================
-
-local function SelectGames()
-
-    GameList.Visible = true
-    UpdatePage.Visible = false
-
-    Tween(GamesButton, 0.28, {
-        BackgroundColor3 = Theme.PurpleDark
-    }):Play()
-
-    Tween(UpdatesButton, 0.28, {
-        BackgroundColor3 = Theme.Sidebar
-    }):Play()
-
-    GamesButton.TextColor3 = Theme.Text
-    UpdatesButton.TextColor3 = Theme.Sub
 
 end
 
-local function SelectUpdates()
-
-    GameList.Visible = false
-    UpdatePage.Visible = true
-
-    Tween(UpdatesButton, 0.28, {
-        BackgroundColor3 = Theme.PurpleDark
-    }):Play()
-
-    Tween(GamesButton, 0.28, {
-        BackgroundColor3 = Theme.Sidebar
-    }):Play()
-
-    UpdatesButton.TextColor3 = Theme.Text
-    GamesButton.TextColor3 = Theme.Sub
-
-end
+--==================================================
+-- RECONNECT CATEGORY BUTTONS
+--==================================================
 
 GamesButton.MouseButton1Click:Connect(function()
 
-    Tween(GamesButton, 0.12, {
-        Size = UDim2.new(1, -20, 0, 62)
-    }):Play()
-
-    task.wait(0.12)
-
-    Tween(GamesButton, 0.25, {
-        Size = UDim2.new(1, -28, 0, 58)
-    }):Play()
-
-    SelectGames()
+    SwitchPage("Games")
 
 end)
 
 UpdatesButton.MouseButton1Click:Connect(function()
 
-    Tween(UpdatesButton, 0.12, {
-        Size = UDim2.new(1, -20, 0, 62)
-    }):Play()
-
-    task.wait(0.12)
-
-    Tween(UpdatesButton, 0.25, {
-        Size = UDim2.new(1, -28, 0, 58)
-    }):Play()
-
-    SelectUpdates()
+    SwitchPage("Updates")
 
 end)
 
 --==================================================
--- BUTTON HOVER
---==================================================
-
-local function ButtonHover(button)
-
-    local original = button.Size
-
-    button.MouseEnter:Connect(function()
-
-        Tween(button, 0.16, {
-            Size = original + UDim2.new(0, 4, 0, 2)
-        }):Play()
-
-    end)
-
-    button.MouseLeave:Connect(function()
-
-        Tween(button, 0.16, {
-            Size = original
-        }):Play()
-
-    end)
-
-end
-
-ButtonHover(Close)
-ButtonHover(Minimize)
-
---==================================================
--- CLOSE ANIMATION
---==================================================
-
-local Closed = false
-
-Close.MouseButton1Click:Connect(function()
-
-    if Closed then
-        return
-    end
-
-    Closed = true
-
-    Tween(Main, 0.28, {
-        Size = UDim2.new(0, 650, 0, 0),
-        BackgroundTransparency = 1
-    }):Play()
-
-    task.wait(0.3)
-
-    Gui:Destroy()
-
-end)
-
---==================================================
--- MINIMIZE INTO STRIP
+-- MINIMIZE SYSTEM
 --==================================================
 
 local Minimized = false
 
-Minimize.MouseButton1Click:Connect(function()
+local NormalSize = UDim2.new(
+    0,
+    CONFIG.Width,
+    0,
+    CONFIG.Height
+)
 
-    Minimized = not Minimized
+local MinimizedSize = UDim2.new(
+    0,
+    CONFIG.Width,
+    0,
+    58
+)
+
+local function SetMinimized(state)
+
+    Minimized = state
 
     if Minimized then
 
-        -- Прячем всё кроме Header
-        Sidebar.Visible = false
-        Content.Visible = false
+        Tween(
+            Main,
+            0.25,
+            {
+                Size = MinimizedSize
+            }
+        )
 
-        Tween(Main, 0.35, {
-            Size = UDim2.new(0, 500, 0, 82)
-        }):Play()
+        Tween(
+            Content,
+            0.2,
+            {
+                BackgroundTransparency = 1
+            }
+        )
 
-        Minimize.Text = "＋"
+        Tween(
+            Sidebar,
+            0.2,
+            {
+                BackgroundTransparency = 1
+            }
+        )
+
+        SearchBox.Visible = false
+
+        MinimizeButton.Text = "+"
 
     else
 
-        Tween(Main, 0.35, {
-            Size = UDim2.new(0, 720, 0, 500)
-        }):Play()
+        Tween(
+            Main,
+            0.25,
+            {
+                Size = NormalSize
+            }
+        )
 
-        task.wait(0.2)
+        SearchBox.Visible = true
 
-        Sidebar.Visible = true
-        Content.Visible = true
+        Tween(
+            Content,
+            0.2,
+            {
+                BackgroundTransparency = 0
+            }
+        )
 
-        Minimize.Text = "−"
+        Tween(
+            Sidebar,
+            0.2,
+            {
+                BackgroundTransparency = 0
+            }
+        )
+
+        MinimizeButton.Text = "−"
 
     end
+
+end
+
+--==================================================
+-- MINIMIZE HOVER
+--==================================================
+
+MinimizeButton.MouseEnter:Connect(function()
+
+    Tween(
+        MinimizeButton,
+        0.12,
+        {
+            BackgroundColor3 =
+                Theme.AccentDark
+        }
+    )
+
+end)
+
+MinimizeButton.MouseLeave:Connect(function()
+
+    Tween(
+        MinimizeButton,
+        0.12,
+        {
+            BackgroundColor3 =
+                Theme.Card
+        }
+    )
+
 end)
 
 --==================================================
--- DRAG
+-- CLOSE HOVER
+--==================================================
+
+CloseButton.MouseEnter:Connect(function()
+
+    Tween(
+        CloseButton,
+        0.12,
+        {
+            BackgroundColor3 =
+                Theme.AccentDark
+        }
+    )
+
+end)
+
+CloseButton.MouseLeave:Connect(function()
+
+    Tween(
+        CloseButton,
+        0.12,
+        {
+            BackgroundColor3 =
+                Theme.Card
+        }
+    )
+
+end)
+
+--==================================================
+-- MINIMIZE CLICK
+--==================================================
+
+MinimizeButton.MouseButton1Click:Connect(function()
+
+    SetMinimized(
+        not Minimized
+    )
+
+end)
+
+--==================================================
+-- CLOSE CLICK
+--==================================================
+
+CloseButton.MouseButton1Click:Connect(function()
+
+    Tween(
+        Main,
+        0.2,
+        {
+            Size = UDim2.new(
+                0,
+                CONFIG.Width - 30,
+                0,
+                CONFIG.Height - 30
+            ),
+
+            BackgroundTransparency = 1
+        }
+    )
+
+    Tween(
+        Glow,
+        0.2,
+        {
+            ImageTransparency = 1
+        }
+    )
+
+    task.wait(0.22)
+
+    ScreenGui:Destroy()
+
+end)
+
+--==================================================
+-- DRAG SYSTEM
 --==================================================
 
 local Dragging = false
 local DragStart
 local StartPosition
 
-Header.InputBegan:Connect(function(input)
+local function UpdateDrag(input)
 
-    if input.UserInputType == Enum.UserInputType.MouseButton1
-        or input.UserInputType == Enum.UserInputType.Touch then
+    local Delta =
+        input.Position - DragStart
+
+    Main.Position = UDim2.new(
+        StartPosition.X.Scale,
+        StartPosition.X.Offset + Delta.X,
+
+        StartPosition.Y.Scale,
+        StartPosition.Y.Offset + Delta.Y
+    )
+
+end
+
+TopBar.InputBegan:Connect(function(input)
+
+    if input.UserInputType ==
+        Enum.UserInputType.MouseButton1
+        or
+        input.UserInputType ==
+        Enum.UserInputType.Touch
+    then
 
         Dragging = true
+
         DragStart = input.Position
+
         StartPosition = Main.Position
 
+        input.Changed:Connect(function()
+
+            if input.UserInputState ==
+                Enum.UserInputState.End
+            then
+
+                Dragging = false
+
+            end
+
+        end)
+
     end
+
 end)
 
-UIS.InputChanged:Connect(function(input)
+UserInputService.InputChanged:Connect(function(input)
 
     if not Dragging then
         return
     end
 
-    if input.UserInputType ~= Enum.UserInputType.MouseMovement
-        and input.UserInputType ~= Enum.UserInputType.Touch then
-        return
+    if input.UserInputType ==
+        Enum.UserInputType.MouseMovement
+        or
+        input.UserInputType ==
+        Enum.UserInputType.Touch
+    then
+
+        UpdateDrag(input)
+
     end
-
-    local Delta = input.Position - DragStart
-
-    Main.Position = UDim2.new(
-        StartPosition.X.Scale,
-        StartPosition.X.Offset + Delta.X,
-        StartPosition.Y.Scale,
-        StartPosition.Y.Offset + Delta.Y
-    )
 
 end)
 
-UIS.InputEnded:Connect(function(input)
-
-    if input.UserInputType == Enum.UserInputType.MouseButton1
-        or input.UserInputType == Enum.UserInputType.Touch then
-
-        Dragging = false
-
-    end
-end)
-
 --==================================================
--- START ANIMATION
+-- TOP BAR BUTTON ANIMATION
 --==================================================
 
-Main.Size = UDim2.new(0, 650, 0, 450)
+local function ButtonPressAnimation(button)
+
+    local originalSize =
+        button.Size
+
+    button.MouseButton1Down:Connect(function()
+
+        Tween(
+            button,
+            0.08,
+            {
+                Size = UDim2.new(
+                    0,
+                    originalSize.X.Offset - 3,
+                    0,
+                    originalSize.Y.Offset - 3
+                )
+            }
+        )
+
+    end)
+
+    button.MouseButton1Up:Connect(function()
+
+        Tween(
+            button,
+            0.08,
+            {
+                Size = originalSize
+            }
+        )
+
+    end)
+
+end
+
+ButtonPressAnimation(
+    MinimizeButton
+)
+
+ButtonPressAnimation(
+    CloseButton
+)
+
+--==================================================
+-- INITIAL STATE
+--==================================================
+
+SwitchPage("Games")
+
+--==================================================
+-- STARTUP ANIMATION
+--==================================================
+
+Main.Size = UDim2.new(
+    0,
+    CONFIG.Width - 40,
+    0,
+    CONFIG.Height - 40
+)
+
 Main.BackgroundTransparency = 1
 
-Tween(Main, 0.45, {
-    Size = UDim2.new(0, 720, 0, 500),
-    BackgroundTransparency = 0.03
-}):Play()
+Glow.ImageTransparency = 1
 
-print("🌙 LUNAR HUB v32.0 LOADED")
+Tween(
+    Main,
+    0.35,
+    {
+        Size = NormalSize,
+
+        BackgroundTransparency = 0
+    }
+)
+
+Tween(
+    Glow,
+    0.4,
+    {
+        ImageTransparency = 0.9
+    }
+)
+
+--==================================================
+-- FINAL SETTINGS
+--==================================================
+
+Main.Active = true
+TopBar.Active = true
+
+GamePage.Visible = true
+UpdatePage.Visible = false
+
+--==================================================
+-- 🌙 LUNAR HUB READY
+--==================================================
+
+print(
+    "🌙 Lunar Hub v32.0 loaded successfully!"
+)
+
+--==================================================
+-- END OF PART 3 / 3
+--==================================================
