@@ -1,33 +1,55 @@
--- 🌙 LUNAR HUB v30.1
--- Clean rebuild
+--[[
+    🌙 LUNAR HUB v32.0
+    Clean UI Rebuild
+]]
 
 local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
 local UIS = game:GetService("UserInputService")
 
 local Player = Players.LocalPlayer
-local PlayerGui = Player:WaitForChild("PlayerGui")
+local GuiParent = game:GetService("CoreGui")
 
--- Удаляем старую копию
-local old = PlayerGui:FindFirstChild("LunarHub")
-if old then old:Destroy() end
+local VERSION = "32.0"
 
+-- Remove old Lunar Hub
+pcall(function()
+    local old = GuiParent:FindFirstChild("LunarHub")
+    if old then
+        old:Destroy()
+    end
+end)
+
+--// THEME
 local Theme = {
-    BG = Color3.fromRGB(14, 12, 27),
-    Card = Color3.fromRGB(27, 23, 48),
-    Card2 = Color3.fromRGB(32, 27, 56),
-    Purple = Color3.fromRGB(130, 55, 255),
-    Purple2 = Color3.fromRGB(92, 35, 200),
+    Background = Color3.fromRGB(12, 10, 25),
+    Header = Color3.fromRGB(15, 12, 30),
+    Sidebar = Color3.fromRGB(17, 14, 34),
+    Card = Color3.fromRGB(27, 23, 52),
+    CardHover = Color3.fromRGB(36, 29, 67),
+    Purple = Color3.fromRGB(112, 42, 255),
+    PurpleDark = Color3.fromRGB(75, 28, 180),
     Text = Color3.fromRGB(245, 242, 255),
-    Sub = Color3.fromRGB(155, 148, 180)
+    SubText = Color3.fromRGB(150, 143, 180)
 }
 
-local function corner(obj, radius)
+local function Tween(obj, time, props)
+    local info = TweenInfo.new(
+        time,
+        Enum.EasingStyle.Quint,
+        Enum.EasingDirection.Out
+    )
+
+    return TweenService:Create(obj, info, props)
+end
+
+local function Corner(obj, radius)
     local c = Instance.new("UICorner")
-    c.CornerRadius = UDim.new(0, radius or 14)
+    c.CornerRadius = UDim.new(0, radius)
     c.Parent = obj
 end
 
-local function stroke(obj, color, transparency, thickness)
+local function Stroke(obj, color, transparency, thickness)
     local s = Instance.new("UIStroke")
     s.Color = color
     s.Transparency = transparency or 0
@@ -35,155 +57,176 @@ local function stroke(obj, color, transparency, thickness)
     s.Parent = obj
 end
 
-local function label(parent, text, size, pos, font, color)
-    local x = Instance.new("TextLabel")
-    x.Parent = parent
-    x.BackgroundTransparency = 1
-    x.Text = text
-    x.TextSize = size
-    x.Font = font or Enum.Font.Gotham
-    x.TextColor3 = color or Theme.Text
-    x.Position = pos
-    x.Size = UDim2.new(1, -20, 0, size + 8)
-    x.TextXAlignment = Enum.TextXAlignment.Left
-    return x
+local function Text(parent, text, size, position, font, color)
+    local t = Instance.new("TextLabel")
+    t.Parent = parent
+    t.BackgroundTransparency = 1
+    t.Text = text
+    t.TextSize = size
+    t.Font = font or Enum.Font.Gotham
+    t.TextColor3 = color or Theme.Text
+    t.Position = position
+    t.Size = UDim2.new(1, -20, 0, size + 8)
+    t.TextXAlignment = Enum.TextXAlignment.Left
+    return t
 end
 
--- GUI
+--// GUI
 local Gui = Instance.new("ScreenGui")
 Gui.Name = "LunarHub"
 Gui.ResetOnSpawn = false
 Gui.IgnoreGuiInset = true
-Gui.Parent = PlayerGui
+Gui.Parent = GuiParent
 
--- Main
+--// MAIN
 local Main = Instance.new("Frame")
 Main.Parent = Gui
-Main.Size = UDim2.new(0, 900, 0, 560)
-Main.Position = UDim2.new(0.5, -450, 0.5, -280)
-Main.BackgroundColor3 = Theme.BG
+Main.AnchorPoint = Vector2.new(0.5, 0.5)
+Main.Position = UDim2.new(0.5, 0, 0.5, 20)
+Main.Size = UDim2.new(0, 820, 0, 500)
+Main.BackgroundColor3 = Theme.Background
 Main.BorderSizePixel = 0
-corner(Main, 22)
-stroke(Main, Theme.Purple, 0.25, 2)
+Main.ClipsDescendants = true
+Main.BackgroundTransparency = 0.04
+Corner(Main, 22)
+Stroke(Main, Theme.Purple, 0.2, 2)
 
--- Header
+--// HEADER
 local Header = Instance.new("Frame")
 Header.Parent = Main
-Header.Size = UDim2.new(1, 0, 0, 85)
-Header.BackgroundColor3 = Theme.BG
+Header.Size = UDim2.new(1, 0, 0, 88)
+Header.BackgroundColor3 = Theme.Header
 Header.BorderSizePixel = 0
-corner(Header, 22)
 
-label(Header, "☾  LUNAR HUB", 25,
-    UDim2.new(0, 30, 0, 18),
-    Enum.Font.GothamBold)
+local Moon = Text(
+    Header,
+    "☾",
+    42,
+    UDim2.new(0, 28, 0, 16),
+    Enum.Font.GothamBold,
+    Color3.fromRGB(210, 180, 255)
+)
+Moon.Size = UDim2.new(0, 50, 0, 50)
+Moon.TextXAlignment = Enum.TextXAlignment.Center
 
-label(Header, "NEON EDITION • v30.1", 12,
-    UDim2.new(0, 31, 0, 51),
+Text(
+    Header,
+    "LUNAR HUB",
+    25,
+    UDim2.new(0, 85, 0, 18),
+    Enum.Font.GothamBold
+)
+
+Text(
+    Header,
+    "v" .. VERSION,
+    13,
+    UDim2.new(0, 86, 0, 49),
     Enum.Font.Gotham,
-    Theme.Sub)
+    Theme.SubText
+)
 
--- Close
+--// CLOSE
 local Close = Instance.new("TextButton")
 Close.Parent = Header
 Close.Size = UDim2.new(0, 48, 0, 44)
-Close.Position = UDim2.new(1, -62, 0, 20)
+Close.Position = UDim2.new(1, -62, 0, 21)
 Close.BackgroundColor3 = Theme.Card
 Close.Text = "×"
-Close.TextSize = 24
+Close.TextSize = 25
 Close.Font = Enum.Font.GothamBold
 Close.TextColor3 = Theme.Text
 Close.BorderSizePixel = 0
-corner(Close, 14)
+Corner(Close, 15)
 
--- Minimize
-local Min = Instance.new("TextButton")
-Min.Parent = Header
-Min.Size = UDim2.new(0, 48, 0, 44)
-Min.Position = UDim2.new(1, -118, 0, 20)
-Min.BackgroundColor3 = Theme.Card
-Min.Text = "−"
-Min.TextSize = 24
-Min.Font = Enum.Font.GothamBold
-Min.TextColor3 = Theme.Text
-Min.BorderSizePixel = 0
-corner(Min, 14)
+--// MINIMIZE
+local Minimize = Instance.new("TextButton")
+Minimize.Parent = Header
+Minimize.Size = UDim2.new(0, 48, 0, 44)
+Minimize.Position = UDim2.new(1, -118, 0, 21)
+Minimize.BackgroundColor3 = Theme.Card
+Minimize.Text = "−"
+Minimize.TextSize = 25
+Minimize.Font = Enum.Font.GothamBold
+Minimize.TextColor3 = Theme.Text
+Minimize.BorderSizePixel = 0
+Corner(Minimize, 15)
 
--- Sidebar
-local Side = Instance.new("Frame")
-Side.Parent = Main
-Side.Position = UDim2.new(0, 0, 0, 85)
-Side.Size = UDim2.new(0, 220, 1, -85)
-Side.BackgroundColor3 = Color3.fromRGB(17, 14, 32)
-Side.BorderSizePixel = 0
-corner(Side, 18)
+--// SIDEBAR
+local Sidebar = Instance.new("Frame")
+Sidebar.Parent = Main
+Sidebar.Position = UDim2.new(0, 0, 0, 88)
+Sidebar.Size = UDim2.new(0, 215, 1, -88)
+Sidebar.BackgroundColor3 = Theme.Sidebar
+Sidebar.BorderSizePixel = 0
 
-local Games = Instance.new("TextButton")
-Games.Parent = Side
-Games.Position = UDim2.new(0, 18, 0, 30)
-Games.Size = UDim2.new(1, -36, 0, 60)
-Games.BackgroundColor3 = Theme.Purple2
-Games.Text = "☾   Games"
-Games.TextSize = 17
-Games.Font = Enum.Font.GothamBold
-Games.TextColor3 = Theme.Text
-Games.BorderSizePixel = 0
-corner(Games, 18)
+-- Games
+local GamesButton = Instance.new("TextButton")
+GamesButton.Parent = Sidebar
+GamesButton.Position = UDim2.new(0, 18, 0, 28)
+GamesButton.Size = UDim2.new(1, -36, 0, 62)
+GamesButton.BackgroundColor3 = Theme.PurpleDark
+GamesButton.Text = "🎮   Games"
+GamesButton.TextSize = 17
+GamesButton.Font = Enum.Font.GothamBold
+GamesButton.TextColor3 = Theme.Text
+GamesButton.BorderSizePixel = 0
+GamesButton.AutoButtonColor = false
+Corner(GamesButton, 18)
 
-local Updates = Instance.new("TextButton")
-Updates.Parent = Side
-Updates.Position = UDim2.new(0, 18, 0, 105)
-Updates.Size = UDim2.new(1, -36, 0, 60)
-Updates.BackgroundColor3 = Side.BackgroundColor3
-Updates.Text = "↻   Updates"
-Updates.TextSize = 17
-Updates.Font = Enum.Font.Gotham
-Updates.TextColor3 = Theme.Sub
-Updates.BorderSizePixel = 0
-corner(Updates, 18)
+-- Updates
+local UpdatesButton = Instance.new("TextButton")
+UpdatesButton.Parent = Sidebar
+UpdatesButton.Position = UDim2.new(0, 18, 0, 103)
+UpdatesButton.Size = UDim2.new(1, -36, 0, 62)
+UpdatesButton.BackgroundColor3 = Theme.Sidebar
+UpdatesButton.Text = "🔄   Updates"
+UpdatesButton.TextSize = 17
+UpdatesButton.Font = Enum.Font.Gotham
+UpdatesButton.TextColor3 = Theme.SubText
+UpdatesButton.BorderSizePixel = 0
+UpdatesButton.AutoButtonColor = false
+Corner(UpdatesButton, 18)
 
--- Content
+--// CONTENT
 local Content = Instance.new("Frame")
 Content.Parent = Main
-Content.Position = UDim2.new(0, 220, 0, 85)
-Content.Size = UDim2.new(1, -220, 1, -85)
+Content.Position = UDim2.new(0, 215, 0, 88)
+Content.Size = UDim2.new(1, -215, 1, -88)
 Content.BackgroundTransparency = 1
 
--- Search
+--// SEARCH
 local Search = Instance.new("TextBox")
 Search.Parent = Content
-Search.Position = UDim2.new(0, 25, 0, 25)
-Search.Size = UDim2.new(1, -50, 0, 55)
+Search.Position = UDim2.new(0, 25, 0, 22)
+Search.Size = UDim2.new(1, -50, 0, 58)
 Search.BackgroundColor3 = Theme.Card
-Search.PlaceholderText = "⌕  Search games..."
-Search.PlaceholderColor3 = Theme.Sub
+Search.PlaceholderText = "🔍  Search games..."
+Search.PlaceholderColor3 = Theme.SubText
 Search.Text = ""
 Search.TextColor3 = Theme.Text
 Search.TextSize = 15
 Search.Font = Enum.Font.Gotham
 Search.BorderSizePixel = 0
-corner(Search, 17)
+Search.ClearTextOnFocus = false
+Corner(Search, 18)
 
--- Game list
-local List = Instance.new("ScrollingFrame")
-List.Parent = Content
-List.Position = UDim2.new(0, 25, 0, 95)
-List.Size = UDim2.new(1, -50, 1, -115)
-List.BackgroundTransparency = 1
-List.BorderSizePixel = 0
-List.ScrollBarThickness = 3
-List.AutomaticCanvasSize = Enum.AutomaticSize.Y
-List.CanvasSize = UDim2.new()
+--// GAME LIST
+local GameList = Instance.new("ScrollingFrame")
+GameList.Parent = Content
+GameList.Position = UDim2.new(0, 25, 0, 92)
+GameList.Size = UDim2.new(1, -50, 1, -105)
+GameList.BackgroundTransparency = 1
+GameList.BorderSizePixel = 0
+GameList.ScrollBarThickness = 3
+GameList.AutomaticCanvasSize = Enum.AutomaticSize.Y
+GameList.CanvasSize = UDim2.new()
 
 local Layout = Instance.new("UIListLayout")
-Layout.Parent = List
-Layout.Padding = UDim.new(0, 12)
+Layout.Parent = GameList
+Layout.Padding = UDim.new(0, 10)
 
-local Padding = Instance.new("UIPadding")
-Padding.Parent = List
-Padding.PaddingBottom = UDim.new(0, 10)
-
--- Games
+--// GAMES
 local GameData = {
     {"Forsaken", "Forsaken scripts"},
     {"MM2", "Murder Mystery 2"},
@@ -194,176 +237,297 @@ local GameData = {
 
 local Cards = {}
 
-local function createGame(data)
-    local card = Instance.new("TextButton")
-    card.Parent = List
-    card.Size = UDim2.new(1, 0, 0, 82)
-    card.BackgroundColor3 = Theme.Card
-    card.Text = ""
-    card.AutoButtonColor = false
-    card.BorderSizePixel = 0
-    corner(card, 18)
+local function CreateGame(name, description)
 
-    local icon = Instance.new("Frame")
-    icon.Parent = card
-    icon.Position = UDim2.new(0, 14, 0, 12)
-    icon.Size = UDim2.new(0, 58, 0, 58)
-    icon.BackgroundColor3 = Theme.Purple2
-    icon.BorderSizePixel = 0
-    corner(icon, 15)
+    local Card = Instance.new("TextButton")
+    Card.Parent = GameList
+    Card.Size = UDim2.new(1, 0, 0, 82)
+    Card.BackgroundColor3 = Theme.Card
+    Card.Text = ""
+    Card.AutoButtonColor = false
+    Card.BorderSizePixel = 0
+    Corner(Card, 18)
 
-    label(icon, "☾", 27,
-        UDim2.new(0, 0, 0, 11),
-        Enum.Font.GothamBold,
-        Theme.Text).TextXAlignment = Enum.TextXAlignment.Center
+    local Icon = Instance.new("Frame")
+    Icon.Parent = Card
+    Icon.Position = UDim2.new(0, 14, 0, 12)
+    Icon.Size = UDim2.new(0, 58, 0, 58)
+    Icon.BackgroundColor3 = Theme.PurpleDark
+    Icon.BorderSizePixel = 0
+    Corner(Icon, 16)
 
-    local title = label(card, data[1], 16,
-        UDim2.new(0, 88, 0, 15),
-        Enum.Font.GothamBold)
+    local MoonIcon = Text(
+        Icon,
+        "🌙",
+        27,
+        UDim2.new(0, 0, 0, 10),
+        Enum.Font.GothamBold
+    )
+    MoonIcon.Size = UDim2.new(1, 0, 0, 35)
+    MoonIcon.TextXAlignment = Enum.TextXAlignment.Center
 
-    local desc = label(card, data[2], 13,
+    Text(
+        Card,
+        name,
+        16,
+        UDim2.new(0, 88, 0, 14),
+        Enum.Font.GothamBold
+    )
+
+    Text(
+        Card,
+        description,
+        13,
         UDim2.new(0, 88, 0, 42),
         Enum.Font.Gotham,
-        Theme.Sub)
+        Theme.SubText
+    )
 
-    local arrow = label(card, "›", 28,
-        UDim2.new(1, -45, 0, 25),
+    local Arrow = Text(
+        Card,
+        "›",
+        28,
+        UDim2.new(1, -48, 0, 24),
         Enum.Font.GothamBold,
-        Theme.Sub)
-    arrow.TextXAlignment = Enum.TextXAlignment.Center
+        Theme.SubText
+    )
+    Arrow.Size = UDim2.new(0, 30, 0, 35)
+    Arrow.TextXAlignment = Enum.TextXAlignment.Center
 
-    card.MouseEnter:Connect(function()
-        card.BackgroundColor3 = Theme.Card2
+    Card.MouseEnter:Connect(function()
+        Tween(Card, 0.12, {
+            BackgroundColor3 = Theme.CardHover
+        }):Play()
     end)
 
-    card.MouseLeave:Connect(function()
-        card.BackgroundColor3 = Theme.Card
+    Card.MouseLeave:Connect(function()
+        Tween(Card, 0.12, {
+            BackgroundColor3 = Theme.Card
+        }):Play()
     end)
 
-    card.MouseButton1Click:Connect(function()
-        -- Здесь позже подключим действие/ссылку игры
-        print("Selected:", data[1])
+    Card.MouseButton1Click:Connect(function()
+        Tween(Card, 0.08, {
+            Size = UDim2.new(0.98, 0, 0, 78)
+        }):Play()
+
+        task.wait(0.08)
+
+        Tween(Card, 0.12, {
+            Size = UDim2.new(1, 0, 0, 82)
+        }):Play()
+
+        print("Lunar Hub:", name)
     end)
 
-    table.insert(Cards, {card, title, desc})
+    table.insert(Cards, {
+        Card = Card,
+        Name = name
+    })
 end
 
-for _, gameData in ipairs(GameData) do
-    createGame(gameData)
+for _, game in ipairs(GameData) do
+    CreateGame(game[1], game[2])
 end
 
--- Updates page
+--// UPDATE PAGE
 local UpdatePage = Instance.new("Frame")
 UpdatePage.Parent = Content
-UpdatePage.Position = UDim2.new(0, 25, 0, 25)
-UpdatePage.Size = UDim2.new(1, -50, 1, -50)
+UpdatePage.Position = UDim2.new(0, 25, 0, 22)
+UpdatePage.Size = UDim2.new(1, -50, 1, -44)
 UpdatePage.BackgroundColor3 = Theme.Card
-UpdatePage.Visible = false
 UpdatePage.BorderSizePixel = 0
-corner(UpdatePage, 18)
+UpdatePage.Visible = false
+Corner(UpdatePage, 18)
 
-label(UpdatePage, "☾  Lunar Updates", 22,
+Text(
+    UpdatePage,
+    "🔄  Lunar Updates",
+    22,
     UDim2.new(0, 25, 0, 25),
-    Enum.Font.GothamBold)
+    Enum.Font.GothamBold
+)
 
-label(UpdatePage,
-    "Lunar Hub v30.1\n\n• Rounded interface\n• Fixed duplicate categories\n• Improved mobile layout\n• New game cards",
+Text(
+    UpdatePage,
+    "Lunar Hub v32.0\n\n" ..
+    "• New rounded interface\n" ..
+    "• New moon game icons\n" ..
+    "• Improved animations\n" ..
+    "• Fixed duplicate categories\n" ..
+    "• Improved mobile layout",
     14,
-    UDim2.new(0, 25, 0, 75),
+    UDim2.new(0, 25, 0, 72),
     Enum.Font.Gotham,
-    Theme.Sub).TextWrapped = true
+    Theme.SubText
+)
 
--- Search
+--// SEARCH
 Search:GetPropertyChangedSignal("Text"):Connect(function()
+
     local query = Search.Text:lower()
 
     for _, item in ipairs(Cards) do
-        local card, title = item[1], item[2]
-        card.Visible = query == "" or title.Text:lower():find(query, 1, true) ~= nil
+
+        local show = query == ""
+            or item.Name:lower():find(query, 1, true)
+
+        item.Card.Visible = show ~= nil
     end
 end)
 
--- Categories
-Games.MouseButton1Click:Connect(function()
-    List.Visible = true
+--// CATEGORY SWITCH
+GamesButton.MouseButton1Click:Connect(function()
+
+    GameList.Visible = true
     Search.Visible = true
     UpdatePage.Visible = false
 
-    Games.BackgroundColor3 = Theme.Purple2
-    Games.TextColor3 = Theme.Text
-    Updates.BackgroundColor3 = Side.BackgroundColor3
-    Updates.TextColor3 = Theme.Sub
+    Tween(GamesButton, 0.15, {
+        BackgroundColor3 = Theme.PurpleDark
+    }):Play()
+
+    Tween(UpdatesButton, 0.15, {
+        BackgroundColor3 = Theme.Sidebar
+    }):Play()
+
+    GamesButton.TextColor3 = Theme.Text
+    UpdatesButton.TextColor3 = Theme.SubText
 end)
 
-Updates.MouseButton1Click:Connect(function()
-    List.Visible = false
+UpdatesButton.MouseButton1Click:Connect(function()
+
+    GameList.Visible = false
     Search.Visible = false
     UpdatePage.Visible = true
 
-    Updates.BackgroundColor3 = Theme.Purple2
-    Updates.TextColor3 = Theme.Text
-    Games.BackgroundColor3 = Side.BackgroundColor3
-    Games.TextColor3 = Theme.Sub
+    Tween(UpdatesButton, 0.15, {
+        BackgroundColor3 = Theme.PurpleDark
+    }):Play()
+
+    Tween(GamesButton, 0.15, {
+        BackgroundColor3 = Theme.Sidebar
+    }):Play()
+
+    UpdatesButton.TextColor3 = Theme.Text
+    GamesButton.TextColor3 = Theme.SubText
 end)
 
--- Close
+--// BUTTON ANIMATIONS
+for _, button in ipairs({Close, Minimize, GamesButton, UpdatesButton}) do
+
+    button.MouseEnter:Connect(function()
+        Tween(button, 0.12, {
+            Size = button.Size + UDim2.new(0, 2, 0, 2)
+        }):Play()
+    end)
+
+    button.MouseLeave:Connect(function()
+        Tween(button, 0.12, {
+            Size = button.Size - UDim2.new(0, 2, 0, 2)
+        }):Play()
+    end)
+end
+
+--// CLOSE
 Close.MouseButton1Click:Connect(function()
+
+    local anim = Tween(Main, 0.22, {
+        Size = UDim2.new(0, 760, 0, 450),
+        BackgroundTransparency = 1
+    })
+
+    anim:Play()
+    anim.Completed:Wait()
+
     Gui:Destroy()
 end)
 
--- Minimize
+--// MINIMIZE
 local minimized = false
 
-Min.MouseButton1Click:Connect(function()
+Minimize.MouseButton1Click:Connect(function()
+
     minimized = not minimized
 
-    for _, obj in ipairs(Main:GetChildren()) do
-        if obj ~= Header then
-            obj.Visible = not minimized
+    if minimized then
+
+        for _, obj in ipairs(Main:GetChildren()) do
+            if obj ~= Header then
+                obj.Visible = false
+            end
+        end
+
+        Tween(Main, 0.22, {
+            Size = UDim2.new(0, 420, 0, 88)
+        }):Play()
+
+    else
+
+        Tween(Main, 0.22, {
+            Size = UDim2.new(0, 820, 0, 500)
+        }):Play()
+
+        task.wait(0.18)
+
+        for _, obj in ipairs(Main:GetChildren()) do
+            if obj ~= Header then
+                obj.Visible = true
+            end
         end
     end
-
-    Main.Size = minimized
-        and UDim2.new(0, 420, 0, 85)
-        or UDim2.new(0, 900, 0, 560)
 end)
 
--- Drag
+--// DRAG
 local dragging = false
 local dragStart
-local startPos
+local startPosition
 
 Header.InputBegan:Connect(function(input)
+
     if input.UserInputType == Enum.UserInputType.MouseButton1
         or input.UserInputType == Enum.UserInputType.Touch then
 
         dragging = true
         dragStart = input.Position
-        startPos = Main.Position
+        startPosition = Main.Position
     end
 end)
 
 UIS.InputChanged:Connect(function(input)
-    if dragging and
-        (input.UserInputType == Enum.UserInputType.MouseMovement
-        or input.UserInputType == Enum.UserInputType.Touch) then
+
+    if dragging and (
+        input.UserInputType == Enum.UserInputType.MouseMovement
+        or input.UserInputType == Enum.UserInputType.Touch
+    ) then
 
         local delta = input.Position - dragStart
 
         Main.Position = UDim2.new(
-            startPos.X.Scale,
-            startPos.X.Offset + delta.X,
-            startPos.Y.Scale,
-            startPos.Y.Offset + delta.Y
+            startPosition.X.Scale,
+            startPosition.X.Offset + delta.X,
+            startPosition.Y.Scale,
+            startPosition.Y.Offset + delta.Y
         )
     end
 end)
 
 UIS.InputEnded:Connect(function(input)
+
     if input.UserInputType == Enum.UserInputType.MouseButton1
         or input.UserInputType == Enum.UserInputType.Touch then
+
         dragging = false
     end
 end)
 
-print("🌙 Lunar Hub loaded successfully")
+--// OPEN ANIMATION
+Main.Size = UDim2.new(0, 700, 0, 420)
+Main.BackgroundTransparency = 1
+
+Tween(Main, 0.3, {
+    Size = UDim2.new(0, 820, 0, 500),
+    BackgroundTransparency = 0.04
+}):Play()
+
+print("🌙 Lunar Hub v32.0 loaded")
