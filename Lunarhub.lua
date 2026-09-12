@@ -501,7 +501,7 @@ MakeText(
     "• Fixed duplicate categories\n" ..
     "• Improved mobile layout",
     13,
-    UDim2.new(0, 22, 0, 95),
+    UDim2.new(0, 22, 0, 105),
     Enum.Font.Gotham,
     Theme.Sub
 )
