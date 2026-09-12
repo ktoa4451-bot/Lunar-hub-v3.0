@@ -48,89 +48,31 @@ local Theme = {
 --==================================================
 
 local Games = {
-    {
-        Name = "Forsaken",
-        Description = "Lunar Hub for Forsaken",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/Forsaken.lua"
+        {
+        Name = "prison life",
+        Description = "prison life",
+        Link = "https://raw.githubusercontent.com/yourhighnesskei/Reformation/refs/heads/main/Loader.lua"
     },
-
     {
-        Name = "MM2",
-        Description = "Lunar Hub for Murder Mystery 2",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/MM2.lua"
+        Name = "lost front",
+        Description = "lost front",
+        Link = "https://raw.githubusercontent.com/Bac0nHck/Scripts/refs/heads/main/TheLostFront.lua"
     },
-
     {
-        Name = "Rivals",
-        Description = "Lunar Hub for Rivals",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/Rivals.lua"
+        Name = "flick",
+        Description = "flick",
+        Link = "https://raw.githubusercontent.com/GLAMOHGA/fling/refs/heads/main/ФЛИК%20FLICK.md"
     },
-
     {
-        Name = "Slap Battles",
-        Description = "Lunar Hub for Slap Battles",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/SlapBattles.lua"
+        Name = "Muscle Legends",
+        Description = "Muscle Legends",
+        Link = "https://raw.githubusercontent.com/2581235867/21/refs/heads/main/By%20Tokattk"
     },
-
     {
-        Name = "King Legacy",
-        Description = "Lunar Hub for King Legacy",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/KingLegacy.lua"
+        Name = "Steal the egg ",
+        Description = "Steal the egg",
+        Link = "https://raw.githubusercontent.com/PulseZax/Loader/refs/heads/main/.lua"
     },
-
-    {
-        Name = "1+ Speed Keyboard",
-        Description = "Lunar Hub for 1+ Speed Keyboard",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/SpeedKeyboard.lua"
-    },
-
-    {
-        Name = "Merge Nuke",
-        Description = "Lunar Hub for Merge Nuke",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/MergeNuke.lua"
-    },
-
-    {
-        Name = "MorphUp",
-        Description = "Lunar Hub for MorphUp",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/MorphUp.lua"
-    },
-
-    {
-        Name = "1 Magic Evolution",
-        Description = "Lunar Hub for 1 Magic Evolution",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/1MagicEvolution.lua"
-    },
-
-    {
-        Name = "99 Nights in Forest",
-        Description = "Lunar Hub for 99 Nights",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/99Nights.lua"
-    },
-
-    {
-        Name = "Survive Zombie Arena",
-        Description = "Lunar Hub for Survive Zombie Arena",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/SurviveZombieArena.lua"
-    },
-
-    {
-        Name = "Color or Die",
-        Description = "Lunar Hub for Color or Die",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/ColorOrDie.lua"
-    },
-
-    {
-        Name = "Rost Alpha Premium",
-        Description = "Lunar Hub for Rost Alpha",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/RostAlpha.lua"
-    },
-
-    {
-        Name = "Prison Life Premium",
-        Description = "Lunar Hub for Prison Life",
-        Link = "https://raw.githubusercontent.com/ktoa4451-bot/Lunar-hub-v3.0/main/Games/PrisonLife.lua"
-    }
 }
 
 --==================================================
