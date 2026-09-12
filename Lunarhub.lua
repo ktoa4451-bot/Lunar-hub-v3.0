@@ -481,6 +481,7 @@ UpdatePage.Visible = false
 
 Corner(UpdatePage, 20)
 
+-- Заголовок НЕ двигаем
 MakeText(
     UpdatePage,
     "🔄  Lunar Updates",
@@ -489,6 +490,7 @@ MakeText(
     Enum.Font.GothamBold
 )
 
+-- Описание обновления опущено ниже
 MakeText(
     UpdatePage,
     "🌙 Lunar Hub v32.0\n\n" ..
@@ -499,7 +501,7 @@ MakeText(
     "• Fixed duplicate categories\n" ..
     "• Improved mobile layout",
     13,
-    UDim2.new(0, 22, 0, 65),
+    UDim2.new(0, 22, 0, 80),
     Enum.Font.Gotham,
     Theme.Sub
 )
